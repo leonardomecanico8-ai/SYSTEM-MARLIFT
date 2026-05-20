@@ -1,92 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1e1e2e">
-<title>Sistema de OS</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #1e1e2e;
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .card {
-    background: #2a2a3e;
-    border-radius: 16px;
-    padding: 40px 32px;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    border-top: 4px solid #ff6600;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  }
-  .icon {
-    width: 72px; height: 72px;
-    background: #ff6600;
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 34px;
-  }
-  h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: white; }
-  p { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
-  a.btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    background: #ff6600; color: white;
-    padding: 15px 28px; border-radius: 10px;
-    font-size: 16px; font-weight: 700;
-    text-decoration: none; width: 100%;
-    transition: background 0.2s;
-  }
-  a.btn:active { background: #cc5200; }
-  .features {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px; margin: 24px 0;
-    text-align: left;
-  }
-  .feat {
-    background: rgba(255,255,255,0.06);
-    border-radius: 8px; padding: 10px 12px;
-    font-size: 12px; color: rgba(255,255,255,0.7);
-    display: flex; align-items: center; gap: 7px;
-  }
-  .feat span { font-size: 16px; }
-  .version {
-    margin-top: 20px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-  }
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="icon">🔧</div>
-  <h1>Sistema de OS</h1>
-  <p>Sistema completo de Ordem de Serviço para técnicos em campo. Funciona offline, gera PDF e sincroniza com Google Sheets.</p>
-
-  <div class="features">
-    <div class="feat"><span>📋</span> Formulário de OS</div>
-    <div class="feat"><span>⏱️</span> Cronômetro</div>
-    <div class="feat"><span>📷</span> Fotos (15)</div>
-    <div class="feat"><span>✍️</span> Assinatura digital</div>
-    <div class="feat"><span>📄</span> PDF download</div>
-    <div class="feat"><span>☁️</span> Google Sheets</div>
-    <div class="feat"><span>💬</span> WhatsApp</div>
-    <div class="feat"><span>📍</span> GPS / Maps</div>
-  </div>
-
-  <a href="sistema-os.html" class="btn">
-    <span>🚀</span> Abrir o Sistema
-  </a>
-
-  <div class="version">v2.0 · jsPDF · Offline-first · MIT</div>
-</div>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Sistema de OS</title>
+    <meta name="description" content="Sistema de OS — built on Replit. Update this description to reflect the app." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Sistema de OS" />
+    <meta property="og:description" content="Sistema de OS — built on Replit. Update this description to reflect the app." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sistema de OS" />
+    <meta name="twitter:description" content="Sistema de OS — built on Replit. Update this description to reflect the app." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
