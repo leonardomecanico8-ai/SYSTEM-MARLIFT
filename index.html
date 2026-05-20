@@ -9,491 +9,532 @@
     <style>
         :root {
             --primary: #ff6600; /* Laranja Marlift */
-            --primary-dark: #cc5200;
-            --dark: #1a1a1a;
-            --zinc: #2d2d2d;
-            --bg: #121212;
+            --gray-dark: #333333; /* Cinza Marlift */
+            --gray-light: #f4f4f4;
             --white: #ffffff;
-            --gray: #a0a0a0;
-            --radius: 12px;
+            --danger: #dc3545;
+            --success: #28a745;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg); color: var(--white); overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--gray-light); color: var(--gray-dark); }
 
-        /* TELA DE LOGIN - BLOQUEIO INICIAL */
-        #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--zinc); padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; border: 1px solid #444; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-        .login-card h2 { color: var(--primary); font-size: 24px; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
-        .login-card input { background: #000; border: 2px solid #444; color: var(--primary); font-size: 28px; text-align: center; letter-spacing: 8px; margin-bottom: 20px; border-radius: 12px; padding: 12px; width: 100%; outline: none; }
-        .login-card input:focus { border-color: var(--primary); }
+        /* TELA DE LOGIN */
+        #login-screen {
+            position: fixed; inset: 0; background: var(--gray-dark);
+            z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .login-box {
+            background: var(--white); padding: 40px 30px; border-radius: 15px;
+            width: 100%; max-width: 350px; text-align: center; border-top: 8px solid var(--primary);
+        }
+        .login-box h2 { margin-bottom: 20px; color: var(--gray-dark); font-weight: 800; }
+        .login-box input {
+            width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 20px; text-align: center; outline: none;
+        }
 
-        /* CABEÇALHO FIXO */
-        .header { background: var(--dark); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--primary); }
-        .header-top { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; }
-        .os-num-tag { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 14px; }
+        /* HEADER FIXO */
+        header {
+            background: var(--gray-dark); color: var(--white);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--primary);
+        }
+        .header-top { padding: 15px; text-align: center; font-weight: 900; letter-spacing: 1px; font-size: 18px; }
+        .header-info { background: #444; padding: 5px 15px; display: flex; justify-content: space-between; font-size: 12px; }
 
-        .nav-tabs { display: flex; background: #000; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; color: var(--gray); font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: rgba(255,102,0,0.1); }
+        /* NAVEGAÇÃO */
+        .nav-tabs { display: flex; background: #222; }
+        .tab-btn {
+            flex: 1; padding: 15px; border: none; background: none;
+            color: #888; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 11px;
+        }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
 
-        /* CONTEÚDO APP */
-        .app-container { max-width: 640px; margin: 0 auto; padding: 20px 15px 120px; display: none; }
-        .card { background: var(--zinc); border-radius: 16px; margin-bottom: 20px; border: 1px solid #444; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .card-header { background: #252525; padding: 14px 18px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 12px; }
-        .card-header i { color: var(--primary); font-size: 16px; }
-        .card-header h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #ddd; }
+        /* CONTEÚDO */
+        .container { max-width: 600px; margin: 0 auto; padding: 15px 15px 100px; }
+        .card { background: var(--white); border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 14px; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px; text-transform: uppercase; }
 
-        /* TIMER BOX */
-        .timer-panel { background: #000; border-radius: 15px; padding: 25px; text-align: center; border: 1px solid #333; }
-        .timer-val { font-family: 'Courier New', monospace; font-size: 52px; color: var(--primary); font-weight: 800; margin-bottom: 15px; }
-        .timer-log { text-align: left; font-size: 11px; color: #777; background: #111; padding: 10px; border-radius: 8px; max-height: 100px; overflow-y: auto; margin-top: 15px; border: 1px solid #222; }
+        /* CRONOMETRO */
+        .timer-container { text-align: center; background: #000; color: var(--primary); padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        #timer-display { font-family: monospace; font-size: 40px; font-weight: bold; }
+        .timer-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .timer-log { font-size: 11px; color: #666; margin-top: 10px; text-align: left; max-height: 80px; overflow-y: auto; background: #f9f9f9; padding: 5px; border-radius: 5px; }
 
         /* FORMULÁRIO */
-        .card-body { padding: 20px; }
-        .form-group { margin-bottom: 18px; }
-        .label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; }
-        .input { width: 100%; padding: 14px; background: #111; border: 1px solid #444; border-radius: 10px; color: white; font-size: 16px; transition: 0.3s; outline: none; }
-        .input:focus { border-color: var(--primary); }
-        .input:disabled { background: #1a1a1a; color: #666; border-color: #333; cursor: not-allowed; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .form-control {
+            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+        }
+        .form-control:disabled { background: #eee; color: #888; }
 
         /* FOTOS */
-        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .photo-item { aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #444; }
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .photo-item { position: relative; aspect-ratio: 1; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* MODAL ASSINATURA FULLSCREEN */
-        #modalSig { display: none; position: fixed; inset: 0; background: white; z-index: 20000; flex-direction: column; }
-        .sig-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
-        #canvasAssinatura { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
-        .sig-footer { padding: 20px; display: flex; gap: 15px; background: #eee; }
-
         /* BOTÕES */
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; transition: 0.2s; text-transform: uppercase; }
+        .btn {
+            padding: 15px; border-radius: 8px; border: none; font-weight: bold;
+            cursor: pointer; font-size: 14px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: #444; color: white; }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn:disabled { opacity: 0.3; pointer-events: none; }
+        .btn-dark { background: var(--gray-dark); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* NAV INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; border-top: 3px solid var(--primary); }
-        .nav-link { flex: 1; padding: 15px; text-align: center; color: var(--gray); border: none; background: none; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .nav-link.active { color: var(--primary); }
-        .nav-link i { display: block; font-size: 20px; margin-bottom: 5px; }
+        /* MODAL ASSINATURA FULLSCREEN */
+        #modal-signature {
+            display: none; position: fixed; inset: 0; background: #fff; z-index: 20000;
+            flex-direction: column;
+        }
+        .sig-header { background: var(--gray-dark); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .sig-body { flex: 1; position: relative; touch-action: none; background: #fff; }
+        #signature-canvas { width: 100%; height: 100%; }
+        .sig-footer { padding: 20px; display: flex; gap: 10px; background: #f4f4f4; }
+
+        /* HISTORICO */
+        .hist-item { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; }
+        .hist-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <!-- TELA DE LOGIN -->
-<div id="loginScreen">
-    <div class="login-card">
-        <i class="fa-solid fa-screwdriver-wrench" style="font-size: 40px; color: var(--primary); margin-bottom: 20px;"></i>
+<div id="login-screen">
+    <div class="login-box">
         <h2>MARLIFT SERVICE</h2>
-        <input type="password" id="passCode" placeholder="••••••" maxlength="8">
-        <button class="btn btn-primary" onclick="autenticar()">ACESSAR SISTEMA</button>
+        <input type="password" id="login-pass" placeholder="Senha (mín. 6 dígitos)" maxlength="12">
+        <button class="btn btn-primary" onclick="validateLogin()">ACESSAR</button>
     </div>
 </div>
 
-<div id="appBody" class="app-container">
-    <header class="header">
-        <div class="header-top">
-            <h1>MARLIFT SERVICE OS</h1>
-            <div id="osNumDisplay" class="os-num-tag">#0001</div>
-        </div>
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="showTab('tab-os', this)">ORDEM SERVIÇO</button>
-            <button class="tab-btn" onclick="showTab('tab-hist', this)">HISTÓRICO</button>
-            <button class="tab-btn" onclick="showTab('tab-cfg', this)">AJUSTES</button>
-        </div>
-    </header>
+<header id="main-header" style="display:none">
+    <div class="header-top">MARLIFT SERVICE OS</div>
+    <div class="header-info">
+        <span id="display-os-number">OS: #0001</span>
+        <span id="display-date">--/--/----</span>
+    </div>
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('tab-os')">Nova OS</button>
+        <button class="tab-btn" onclick="showTab('tab-history')">Histórico</button>
+        <button class="tab-btn" onclick="showTab('tab-config')">Configurações</button>
+    </div>
+</header>
 
-    <!-- ABA: ORDEM DE SERVIÇO -->
-    <div id="tab-os" class="tab-pane" style="display: block;">
+<div class="container" id="main-app" style="display:none">
+    
+    <!-- ABA: NOVA OS -->
+    <div id="tab-os" class="tab-content">
         
         <!-- CRONOMETRO -->
-        <div class="timer-panel" style="margin-top: 20px;">
-            <div id="timerDisplay" class="timer-val">00:00:00</div>
-            <div id="timerStatus" style="font-size: 11px; color: var(--primary); margin-bottom: 15px; font-weight: 800;">AGUARDANDO INÍCIO</div>
-            <div style="display: flex; gap: 10px;">
-                <button id="btnStart" class="btn btn-primary" onclick="timerStart()"><i class="fa-solid fa-play"></i> INICIAR</button>
-                <button id="btnPause" class="btn btn-secondary" onclick="abrirModalPausa()" disabled><i class="fa-solid fa-pause"></i> PAUSAR</button>
+        <div class="timer-container">
+            <div id="timer-display">00:00:00</div>
+            <div class="timer-controls">
+                <button id="btn-start" class="btn btn-primary" onclick="startTimer()">INICIAR</button>
+                <button id="btn-pause" class="btn btn-dark" onclick="showPauseMenu()" disabled>PAUSAR</button>
             </div>
-            <div id="timerLog" class="timer-log">Sem registros no atendimento atual.</div>
+            <div id="timer-log" class="timer-log"></div>
         </div>
 
-        <!-- DADOS CLIENTE -->
-        <div class="card" style="margin-top: 25px;">
-            <div class="card-header"><i class="fa-solid fa-building"></i><h3>Dados do Cliente</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="label">Cliente / Razão Social</label><input type="text" id="cliNome" class="input os-field"></div>
-                <div class="form-group"><label class="label">Local do Atendimento</label><input type="text" id="cliEnd" class="input os-field"></div>
-                <div style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex:1"><label class="label">Marca</label><input type="text" id="eqMar" class="input os-field"></div>
-                    <div class="form-group" style="flex:1"><label class="label">Modelo</label><input type="text" id="eqMod" class="input os-field"></div>
-                </div>
-                <div class="form-group"><label class="label">Número de Série</label><input type="text" id="eqSer" class="input os-field"></div>
-            </div>
-        </div>
-
-        <!-- SERVIÇO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-tools"></i><h3>Relatório Técnico</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="label">Defeito Reclamado</label><input type="text" id="osDef" class="input os-field"></div>
-                <div class="form-group"><label class="label">Serviço Realizado</label><textarea id="osSrv" class="input os-field" rows="4"></textarea></div>
-                <div class="form-group"><label class="label">Peças e Materiais</label><textarea id="osPec" class="input os-field" rows="2"></textarea></div>
+            <h3>Dados do Cliente</h3>
+            <div class="form-group">
+                <label>RAZÃO SOCIAL / NOME</label>
+                <input type="text" id="cli-nome" class="form-control os-input">
+            </div>
+            <div class="form-group">
+                <label>ENDEREÇO DO ATENDIMENTO</label>
+                <input type="text" id="cli-end" class="form-control os-input">
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+                <div class="form-group"><label>MARCA</label><input type="text" id="eq-marca" class="form-control os-input"></div>
+                <div class="form-group"><label>MODELO</label><input type="text" id="eq-modelo" class="form-control os-input"></div>
+            </div>
+            <div class="form-group">
+                <label>Nº DE SÉRIE</label>
+                <input type="text" id="eq-serie" class="form-control os-input">
             </div>
         </div>
 
-        <!-- FOTOS -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-camera"></i><h3>Fotos (Evidências)</h3></div>
-            <div class="card-body">
-                <input type="file" id="fotoInput" accept="image/*" multiple style="display:none" onchange="capturarFotos(this)">
-                <button class="btn btn-outline os-field" onclick="document.getElementById('fotoInput').click()"><i class="fa-solid fa-camera"></i> ADICIONAR FOTOS</button>
-                <div id="fotosGrid" class="photo-grid"></div>
+            <h3>Relatório Técnico</h3>
+            <div class="form-group">
+                <label>DEFEITO RECLAMADO</label>
+                <input type="text" id="rel-defeito" class="form-control os-input">
+            </div>
+            <div class="form-group">
+                <label>SERVIÇO EXECUTADO</label>
+                <textarea id="rel-servico" class="form-control os-input" rows="4"></textarea>
             </div>
         </div>
 
-        <!-- ENCERRAMENTO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-user-check"></i><h3>Encerramento</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="label">Nome do Contato (Recebedor)</label><input type="text" id="recNome" class="input os-field"></div>
-                <div class="form-group"><label class="label">RG ou CPF</label><input type="text" id="recDoc" class="input os-field"></div>
-                
-                <label class="label">Assinatura Digital</label>
-                <div id="previewSig" style="width:100%; height:120px; border:2px dashed #444; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; background:#111; overflow:hidden;">
-                    <span style="color:#555; font-size: 11px;">Assinatura não coletada</span>
-                </div>
+            <h3>Evidências (Fotos)</h3>
+            <input type="file" id="photo-input" accept="image/*" capture="environment" multiple style="display:none" onchange="handlePhotos(this)">
+            <button class="btn btn-outline os-input" onclick="document.getElementById('photo-input').click()"><i class="fa fa-camera"></i> ADICIONAR FOTOS</button>
+            <div id="photo-grid" class="photo-grid"></div>
+        </div>
 
-                <button id="btnAbrirSig" class="btn btn-warning os-field" onclick="abrirAssinatura()"><i class="fa-solid fa-pen-nib"></i> COLETAR ASSINATURA</button>
-                
-                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
-                    <button class="btn btn-secondary" onclick="salvarHistorico()"><i class="fa-solid fa-floppy-disk"></i> SALVAR NO HISTÓRICO</button>
-                    <button id="btnPdf" class="btn btn-primary" onclick="gerarPDF()" disabled><i class="fa-solid fa-file-pdf"></i> GERAR PDF FINAL</button>
-                </div>
+        <div class="card">
+            <h3>Encerramento</h3>
+            <div class="form-group">
+                <label>CONTATO DO CLIENTE (QUEM RECEBEU)</label>
+                <input type="text" id="sig-contato" class="form-control os-input">
+            </div>
+            <div class="form-group">
+                <label>DOCUMENTO (RG ou CPF)</label>
+                <input type="text" id="sig-doc" class="form-control os-input">
+            </div>
+            
+            <label style="font-size: 11px; font-weight: bold;">ASSINATURA</label>
+            <div id="sig-preview" style="border:1px solid #ddd; height:100px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
+                <span style="color:#aaa; font-size:12px;">Pendente</span>
+            </div>
+
+            <button id="btn-open-sig" class="btn btn-dark os-input" onclick="openSignature()"><i class="fa fa-signature"></i> ASSINAR AGORA</button>
+            
+            <div style="margin-top:20px; display:grid; gap:10px">
+                <button class="btn btn-primary" id="btn-save-os" onclick="saveOS()"><i class="fa fa-save"></i> SALVAR OS NO HISTÓRICO</button>
+                <button class="btn btn-dark" id="btn-pdf" onclick="generatePDF()" disabled><i class="fa fa-file-pdf"></i> GERAR RELATÓRIO PDF</button>
             </div>
         </div>
     </div>
 
-    <!-- ABA: HISTÓRICO -->
-    <div id="tab-hist" class="tab-pane" style="display: none;">
-        <div id="listaHistorico" style="margin-top: 15px;"></div>
+    <!-- ABA: HISTORICO -->
+    <div id="tab-history" class="tab-content" style="display:none">
+        <div id="history-list"></div>
     </div>
 
-    <!-- ABA: AJUSTES -->
-    <div id="tab-cfg" class="tab-pane" style="display: none;">
-        <div class="card" style="margin-top: 15px;">
-            <div class="card-header"><i class="fa-solid fa-cloud"></i><h3>Sincronização</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="label">Google WebApp URL</label><input type="text" id="cfgUrl" class="input" placeholder="https://script.google.com/..."></div>
-                <button class="btn btn-outline" style="font-size:11px" onclick="copiarGoogleScript()"><i class="fa-solid fa-code"></i> Copiar Script da Planilha</button>
+    <!-- ABA: CONFIG -->
+    <div id="tab-config" class="tab-content" style="display:none">
+        <div class="card">
+            <h3>Configuração de Nuvem</h3>
+            <div class="form-group">
+                <label>URL DO GOOGLE APPS SCRIPT</label>
+                <input type="text" id="cfg-url" class="form-control" placeholder="https://script.google.com/...">
             </div>
+            <button class="btn btn-outline" onclick="copyAppScript()">COPIAR CÓDIGO SCRIPT</button>
         </div>
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-gears"></i><h3>Parâmetros</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="label">Próximo Nº de OS</label><input type="number" id="cfgNextOS" class="input" onchange="setNextOS(this.value)"></div>
-                <div class="form-group"><label class="label">Nome da Empresa</label><input type="text" id="cfgEmpresa" class="input" value="MARLIFT SERVICE"></div>
-                <button class="btn btn-danger" onclick="limparTudo()"><i class="fa-solid fa-trash-can"></i> APAGAR TODOS OS DADOS</button>
-                <button class="btn btn-secondary" style="margin-top:15px" onclick="logout()"><i class="fa-solid fa-power-off"></i> SAIR DO SISTEMA</button>
+            <h3>Sistema</h3>
+            <div class="form-group">
+                <label>PRÓXIMO NÚMERO DE OS</label>
+                <input type="number" id="cfg-next-num" class="form-control" value="1" onchange="updateOSCount()">
             </div>
+            <button class="btn btn-danger" onclick="clearData()"><i class="fa fa-trash"></i> APAGAR TUDO</button>
         </div>
     </div>
-
-    <nav class="bottom-nav">
-        <button class="nav-link active" onclick="switchTab('tab-os', this)"><i class="fa-solid fa-file-invoice"></i>OS</button>
-        <button class="nav-link" onclick="switchTab('tab-hist', this)"><i class="fa-solid fa-history"></i>HISTÓRICO</button>
-        <button class="nav-link" onclick="switchTab('tab-cfg', this)"><i class="fa-solid fa-sliders"></i>AJUSTES</button>
-    </nav>
 </div>
 
 <!-- MODAL ASSINATURA -->
-<div id="modalSig" class="modal">
+<div id="modal-signature">
     <div class="sig-header">
-        <h3>ASSINATURA DIGITAL (PAISAGEM)</h3>
-        <button onclick="fecharAssinatura()" style="background:none; border:none; color:white; font-size:30px;">&times;</button>
+        <span>ASSINATURA DO CLIENTE</span>
+        <button onclick="closeSignature()" style="background:none; border:none; color:white; font-size:24px;">&times;</button>
     </div>
-    <div class="sig-body"><canvas id="canvasAssinatura"></canvas></div>
+    <div class="sig-body">
+        <canvas id="signature-canvas"></canvas>
+    </div>
     <div class="sig-footer">
-        <button class="btn btn-secondary" style="flex:1" onclick="limparCanvas()">LIMPAR</button>
-        <button class="btn btn-primary" style="flex:2" onclick="finalizarAssinatura()">SALVAR ASSINATURA</button>
+        <button class="btn btn-outline" onclick="clearCanvas()">LIMPAR TELA</button>
+        <button class="btn btn-primary" onclick="saveSignature()">SALVAR ASSINATURA</button>
     </div>
 </div>
 
 <!-- MODAL MOTIVO PAUSA -->
-<div id="modalPause" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:30000; align-items:center; justify-content:center; padding:20px;">
-    <div class="card" style="width:100%; max-width:320px; border-top: 5px solid var(--primary);">
-        <div class="card-header"><h3>MOTIVO DA PAUSA</h3></div>
-        <div class="card-body">
-            <select id="motivoPausa" class="input" style="margin-bottom:20px;">
-                <option value="Intervalo Almoço">Almoço</option>
-                <option value="Aguardando Peça">Aguardando Peça</option>
-                <option value="Aguardando Equipamento">Aguardando Equipamento</option>
-                <option value="Aguardando Aprovação">Aguardando Aprovação</option>
-            </select>
-            <button class="btn btn-primary" onclick="confirmarPausa()">CONFIRMAR PAUSA</button>
-            <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('modalPause').style.display='none'">CANCELAR</button>
-        </div>
+<div id="modal-pause" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:30000; align-items:center; justify-content:center; padding:20px;">
+    <div class="card" style="width:100%; max-width:300px;">
+        <h3>Motivo da Pausa</h3>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:left" onclick="pauseTimer('Almoço')">Almoço</button>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:left" onclick="pauseTimer('Aguardando Peça')">Aguardando Peça</button>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:left" onclick="pauseTimer('Máquina em Uso')">Equipamento em Uso</button>
+        <button class="btn btn-outline" style="margin-bottom:10px; text-align:left" onclick="pauseTimer('Aguardando Aprovação')">Aguardando Aprovação</button>
+        <button class="btn btn-dark" style="margin-top:10px" onclick="document.getElementById('modal-pause').style.display='none'">VOLTAR</button>
     </div>
 </div>
 
 <script>
-// --- ESTADO ---
-let timerInterval, seconds = 0, timerState = 'idle', timerLog = [];
-let fotosList = [], sigImg = null;
+// --- VARIÁVEIS GLOBAIS ---
+let timerInterval, seconds = 0, timerStatus = 'parado', logs = [];
+let photos = [], signatureData = null;
 let canvas, ctx, drawing = false;
-let nextOSNum = parseInt(localStorage.getItem('ml_os_counter')) || 1;
+let currentOSNum = parseInt(localStorage.getItem('ml_os_count')) || 1;
 
 // --- LOGIN ---
-document.getElementById('passCode').addEventListener('keyup', (e) => { if(e.key === 'Enter') autenticar(); });
-
-function autenticar() {
-    const p = document.getElementById('passCode').value;
-    if(p.length >= 6 && p === '123456') { // Senha padrão
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appBody').style.display = 'block';
-        localStorage.setItem('ml_logged', 'true');
-        updateOSHeader();
-    } else { alert('Acesso Negado. Senha de no mínimo 6 dígitos.'); }
+document.getElementById('login-pass').addEventListener('keypress', (e) => { if(e.key === 'Enter') validateLogin(); });
+function validateLogin() {
+    const pass = document.getElementById('login-pass').value;
+    if(pass.length >= 6 && pass === '123456') { // SENHA PADRÃO: 123456
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        document.getElementById('main-header').style.display = 'block';
+        initSystem();
+    } else { alert('Senha incorreta (mín. 6 dígitos).'); }
 }
 
-if(localStorage.getItem('ml_logged') === 'true') {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appBody').style.display = 'block';
-    updateOSHeader();
+function initSystem() {
+    updateOSCount();
+    document.getElementById('display-date').innerText = new Date().toLocaleDateString('pt-BR');
+    document.getElementById('cfg-url').value = localStorage.getItem('ml_google_url') || '';
 }
-
-function logout() { localStorage.removeItem('ml_logged'); location.reload(); }
 
 // --- NAVEGAÇÃO ---
-function switchTab(id, el) {
-    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-    document.querySelectorAll('.tab-btn, .nav-link').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-    if(id === 'tab-hist') renderHist();
+function showTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tab).style.display = 'block';
+    event.currentTarget.classList.add('active');
+    if(tab === 'tab-history') renderHistory();
 }
 
 // --- CRONOMETRO ---
-function timerStart() {
-    if(timerState === 'running') return;
-    timerState = 'running';
-    document.getElementById('btnStart').disabled = true;
-    document.getElementById('btnPause').disabled = false;
-    document.getElementById('timerStatus').innerText = "EM ATENDIMENTO";
-    timerLog.push(`▶ Início: ${new Date().toLocaleTimeString()}`);
-    updateLogs();
+function startTimer() {
+    if(timerStatus === 'rodando') return;
+    timerStatus = 'rodando';
+    document.getElementById('btn-start').disabled = true;
+    document.getElementById('btn-pause').disabled = false;
+    logs.push("▶ Início: " + new Date().toLocaleTimeString());
+    updateTimerLog();
     timerInterval = setInterval(() => {
         seconds++;
-        document.getElementById('timerDisplay').innerText = new Date(seconds * 1000).toISOString().substr(11, 8);
+        updateTimerDisplay();
     }, 1000);
 }
 
-function abrirModalPausa() { document.getElementById('modalPause').style.display = 'flex'; }
+function showPauseMenu() { document.getElementById('modal-pause').style.display = 'flex'; }
 
-function confirmarPausa() {
+function pauseTimer(motivo) {
     clearInterval(timerInterval);
-    timerState = 'paused';
-    const m = document.getElementById('motivoPausa').value;
-    timerLog.push(`⏸ Pausa (${m}): ${new Date().toLocaleTimeString()}`);
-    updateLogs();
-    document.getElementById('timerStatus').innerText = "PAUSADO (" + m.toUpperCase() + ")";
-    document.getElementById('btnStart').disabled = false;
-    document.getElementById('btnStart').innerHTML = '<i class="fa-solid fa-rotate-left"></i> RETOMAR';
-    document.getElementById('btnPause').disabled = true;
-    document.getElementById('modalPause').style.display = 'none';
+    timerStatus = 'pausado';
+    logs.push(`⏸ Pausa (${motivo}): ` + new Date().toLocaleTimeString());
+    updateTimerLog();
+    document.getElementById('btn-start').disabled = false;
+    document.getElementById('btn-start').innerText = "RETOMAR";
+    document.getElementById('btn-pause').disabled = true;
+    document.getElementById('modal-pause').style.display = 'none';
 }
 
-function updateLogs() { document.getElementById('timerLog').innerHTML = timerLog.join('<br>'); }
-
-// --- ASSINATURA ---
-function abrirAssinatura() {
-    document.getElementById('modalSig').style.display = 'flex';
-    canvas = document.getElementById('canvasAssinatura');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
-    ctx.lineWidth = 3; ctx.strokeStyle = "#000"; ctx.lineCap = 'round';
-
-    ['mousedown', 'touchstart'].forEach(e => canvas.addEventListener(e, startDraw));
-    ['mousemove', 'touchmove'].forEach(e => canvas.addEventListener(e, draw));
-    ['mouseup', 'touchend'].forEach(e => canvas.addEventListener(e, stopDraw));
+function updateTimerDisplay() {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    document.getElementById('timer-display').innerText = `${h}:${m}:${s}`;
 }
 
-function startDraw(e) { 
-    drawing = true; 
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-    ctx.beginPath(); ctx.moveTo(x, y); 
-}
-function draw(e) {
-    if(!drawing) return;
-    e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-    ctx.lineTo(x, y); ctx.stroke();
-}
-function stopDraw() { drawing = false; }
-function limparCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); }
-
-function finalizarAssinatura() {
-    sigImg = canvas.toDataURL();
-    document.getElementById('previewSig').innerHTML = `<img src="${sigImg}" style="height:100%">`;
-    clearInterval(timerInterval);
-    timerLog.push(`🏁 Fim: ${new Date().toLocaleTimeString()} | Total: ${document.getElementById('timerDisplay').innerText}`);
-    updateLogs();
-    bloquearEdicao(true);
-    fecharAssinatura();
-}
-
-function fecharAssinatura() { document.getElementById('modalSig').style.display = 'none'; }
-
-function bloquearEdicao(lock) {
-    document.querySelectorAll('.os-field').forEach(i => i.disabled = lock);
-    document.getElementById('btnPdf').disabled = !lock;
-    document.getElementById('btnStart').disabled = lock;
-}
+function updateTimerLog() { document.getElementById('timer-log').innerHTML = logs.join('<br>'); }
 
 // --- FOTOS ---
-function capturarFotos(input) {
+function handlePhotos(input) {
     Array.from(input.files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = (e) => { fotosList.push(e.target.result); renderFotos(); };
+        reader.onload = (e) => { photos.push(e.target.result); renderPhotos(); };
         reader.readAsDataURL(file);
     });
 }
-function renderFotos() {
-    document.getElementById('fotosGrid').innerHTML = fotosList.map((f, i) => `
-        <div class="photo-item"><img src="${f}"><button onclick="fotosList.splice(${i},1);renderFotos()" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px;">&times;</button></div>`).join('');
+function renderPhotos() {
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = photos.map((p, i) => `<div class="photo-item"><img src="${p}"><button onclick="photos.splice(${i},1);renderPhotos()" style="position:absolute;top:0;right:0;background:red;color:white;border:none;">&times;</button></div>`).join('');
 }
 
-// --- SALVAMENTO ---
-function setNextOS(val) { nextOSNum = parseInt(val) || nextOSNum; localStorage.setItem('ml_os_counter', nextOSNum); updateOSHeader(); }
+// --- ASSINATURA ---
+function openSignature() {
+    document.getElementById('modal-signature').style.display = 'flex';
+    canvas = document.getElementById('signature-canvas');
+    ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
 
-function updateOSHeader() {
-    const s = "#" + nextOSNum.toString().padStart(4, '0');
-    document.getElementById('headerOSNum').innerText = s;
-    document.getElementById('cfgNextOS').value = nextOSNum;
+    ['mousedown', 'touchstart'].forEach(e => canvas.addEventListener(e, startDrawing));
+    ['mousemove', 'touchmove'].forEach(e => canvas.addEventListener(e, draw));
+    ['mouseup', 'touchend'].forEach(e => canvas.addEventListener(e, stopDrawing));
 }
 
-function salvarHistorico() {
+function startDrawing(e) { drawing = true; draw(e); }
+function draw(e) {
+    if(!drawing) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+}
+function stopDrawing() { drawing = false; ctx.beginPath(); }
+function clearCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); }
+function closeSignature() { document.getElementById('modal-signature').style.display = 'none'; }
+
+function saveSignature() {
+    signatureData = canvas.toDataURL();
+    document.getElementById('sig-preview').innerHTML = `<img src="${signatureData}" style="max-height:100%">`;
+    clearInterval(timerInterval);
+    logs.push("🏁 Fim: " + new Date().toLocaleTimeString());
+    updateTimerLog();
+    lockInputs(true);
+    closeSignature();
+}
+
+function lockInputs(lock) {
+    document.querySelectorAll('.os-input').forEach(i => i.disabled = lock);
+    document.getElementById('btn-pdf').disabled = !lock;
+    document.getElementById('btn-start').disabled = lock;
+}
+
+// --- SALVAR E HISTORICO ---
+function updateOSCount() {
+    const val = document.getElementById('cfg-next-num').value;
+    currentOSNum = parseInt(val);
+    localStorage.setItem('ml_os_count', currentOSNum);
+    document.getElementById('display-os-number').innerText = "OS: #" + currentOSNum.toString().padStart(4, '0');
+}
+
+function saveOS() {
+    if(!document.getElementById('cli-nome').value) { alert('Informe o cliente'); return; }
     const os = {
-        id: Date.now(), numero: nextOSNum, cliente: document.getElementById('cliNome').value,
-        data: new Date().toLocaleString(), tempo: document.getElementById('timerDisplay').innerText,
-        sig: sigImg, fotos: fotosList, logs: timerLog, sec: seconds,
-        campos: {
-            end: document.getElementById('cliEnd').value, mar: document.getElementById('eqMar').value,
-            mod: document.getElementById('eqMod').value, ser: document.getElementById('eqSer').value,
-            def: document.getElementById('osDef').value, srv: document.getElementById('osSrv').value,
-            pec: document.getElementById('osPec').value, rec: document.getElementById('recNome').value,
-            doc: document.getElementById('recDoc').value
-        }
+        id: Date.now(),
+        num: currentOSNum,
+        cliente: document.getElementById('cli-nome').value,
+        endereco: document.getElementById('cli-end').value,
+        marca: document.getElementById('eq-marca').value,
+        modelo: document.getElementById('eq-modelo').value,
+        serie: document.getElementById('eq-serie').value,
+        defeito: document.getElementById('rel-defeito').value,
+        servico: document.getElementById('rel-servico').value,
+        contato: document.getElementById('sig-contato').value,
+        doc: document.getElementById('sig-doc').value,
+        tempo: document.getElementById('timer-display').innerText,
+        segundos: seconds,
+        logs: logs,
+        fotos: photos,
+        assinatura: signatureData,
+        data: new Date().toLocaleString('pt-BR')
     };
-    let h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
-    h.unshift(os);
-    localStorage.setItem('ml_hist_list', JSON.stringify(h));
-    nextOSNum++; setNextOS(nextOSNum);
-    sincronizar(os);
-    alert('OS Gravada com Sucesso!');
-}
 
-function sincronizar(os) {
-    const url = document.getElementById('cfgUrl').value;
-    if(!url) return;
-    try { fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(os) }); } catch(e) {}
-}
+    let hist = JSON.parse(localStorage.getItem('ml_history') || '[]');
+    hist.unshift(os);
+    localStorage.setItem('ml_history', JSON.stringify(hist));
 
-function renderHist() {
-    const h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
-    document.getElementById('listaHistorico').innerHTML = h.map(o => `
-        <div class="card" style="padding:15px; margin-bottom:10px;">
-            <div style="font-weight:bold; color:var(--primary)">OS #${o.numero.toString().padStart(4,'0')} - ${o.cliente}</div>
-            <div style="font-size:12px; color:#888">${o.data} | Tempo: ${o.tempo}</div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-secondary" style="padding:8px" onclick="resgatarOS(${o.id})">EDITAR/RESGATAR</button>
-                <button class="btn btn-danger" style="padding:8px; width:50px" onclick="deletarOS(${o.id})"><i class="fa-solid fa-trash"></i></button>
-            </div>
-        </div>`).join('');
-}
-
-function resgatarOS(id) {
-    const h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
-    const o = h.find(x => x.id === id);
-    if(!o) return;
-    document.getElementById('cliNome').value = o.cliente;
-    document.getElementById('cliEnd').value = o.campos.end;
-    document.getElementById('eqMar').value = o.campos.mar;
-    document.getElementById('eqMod').value = o.campos.mod;
-    document.getElementById('eqSer').value = o.campos.ser;
-    document.getElementById('osDef').value = o.campos.def;
-    document.getElementById('osSrv').value = o.campos.srv;
-    document.getElementById('osPec').value = o.campos.pec;
-    document.getElementById('recNome').value = o.campos.rec;
-    document.getElementById('recDoc').value = o.campos.doc;
-    seconds = o.sec; document.getElementById('timerDisplay').innerText = o.tempo;
-    timerLog = o.logs; updateLogs();
-    fotosList = o.fotos; renderFotos();
-    sigImg = o.sig;
-    if(sigImg) {
-        document.getElementById('previewSig').innerHTML = `<img src="${sigImg}" style="height:100%">`;
-        bloquearEdicao(true);
-    } else { bloquearEdicao(false); }
-    switchTab('tab-os', document.querySelector('.nav-item'));
-}
-
-function deletarOS(id) {
-    if(confirm('Excluir OS permanentemente?')) {
-        let h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
-        h = h.filter(x => x.id !== id);
-        localStorage.setItem('ml_hist_list', JSON.stringify(h)); renderHist();
+    // Nuvem
+    const url = document.getElementById('cfg-url').value;
+    if(url) {
+        localStorage.setItem('ml_google_url', url);
+        fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(os) });
     }
+
+    currentOSNum++;
+    document.getElementById('cfg-next-num').value = currentOSNum;
+    updateOSCount();
+    alert('OS Salva com sucesso!');
 }
 
-// PDF
-function gerarPDF() {
+function renderHistory() {
+    const hist = JSON.parse(localStorage.getItem('ml_history') || '[]');
+    const list = document.getElementById('history-list');
+    if(hist.length === 0) { list.innerHTML = '<p style="text-align:center">Vazio</p>'; return; }
+    
+    list.innerHTML = hist.map(os => `
+        <div class="hist-item">
+            <div class="hist-header">
+                <span>#${os.num.toString().padStart(4,'0')}</span>
+                <span>${os.data}</span>
+            </div>
+            <div style="font-size:14px; margin-bottom:10px">${os.cliente}</div>
+            <div style="display:flex; gap:10px">
+                <button class="btn btn-outline" style="padding:5px" onclick="loadOS(${os.id})">EDITAR/RESGATAR</button>
+                <button class="btn btn-dark" style="padding:5px; width:40px" onclick="deleteOS(${os.id})">&times;</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadOS(id) {
+    const hist = JSON.parse(localStorage.getItem('ml_history') || '[]');
+    const os = hist.find(x => x.id === id);
+    if(!os) return;
+
+    document.getElementById('cli-nome').value = os.cliente;
+    document.getElementById('cli-end').value = os.endereco;
+    document.getElementById('eq-marca').value = os.marca;
+    document.getElementById('eq-modelo').value = os.modelo;
+    document.getElementById('eq-serie').value = os.serie;
+    document.getElementById('rel-defeito').value = os.defeito;
+    document.getElementById('rel-servico').value = os.servico;
+    document.getElementById('sig-contato').value = os.contato;
+    document.getElementById('sig-doc').value = os.doc;
+    
+    seconds = os.segundos;
+    updateTimerDisplay();
+    logs = os.logs;
+    updateTimerLog();
+    photos = os.fotos || [];
+    renderPhotos();
+    signatureData = os.assinatura;
+    if(signatureData) {
+        document.getElementById('sig-preview').innerHTML = `<img src="${signatureData}" style="max-height:100%">`;
+        lockInputs(true);
+    } else {
+        lockInputs(false);
+    }
+    showTab('tab-os');
+}
+
+function deleteOS(id) {
+    if(!confirm('Excluir OS?')) return;
+    let hist = JSON.parse(localStorage.getItem('ml_history') || '[]');
+    hist = hist.filter(x => x.id !== id);
+    localStorage.setItem('ml_history', JSON.stringify(hist));
+    renderHistory();
+}
+
+// --- PDF ---
+function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const osIdStr = "#" + (nextOSNum-1).toString().padStart(4, '0');
+    const osNum = document.getElementById('display-os-number').innerText;
+
+    doc.setFillColor(51, 51, 51); doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255, 102, 0); doc.setFontSize(22); doc.text("MARLIFT SERVICE", 105, 20, {align: 'center'});
     
-    doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255, 102, 0); doc.setFontSize(26); doc.text(document.getElementById('cfgEmpresa').value, 105, 25, { align: 'center' });
-    doc.setTextColor(255, 255, 255); doc.setFontSize(11); doc.text("ORDEM DE SERVIÇO: " + osIdStr, 105, 33, { align: 'center' });
+    doc.setTextColor(0,0,0); doc.setFontSize(10);
+    doc.text(osNum, 195, 35, {align: 'right'});
+    doc.text("Data: " + document.getElementById('display-date').innerText, 15, 35);
 
-    doc.setTextColor(0,0,0); doc.setFontSize(12); doc.setFont(undefined, 'bold'); doc.text("CLIENTE", 15, 55); doc.setFont(undefined, 'normal');
-    doc.text(`Cliente: ${document.getElementById('cliNome').value}`, 15, 62);
-    doc.text(`Local: ${document.getElementById('cliEnd').value}`, 15, 69);
-    doc.text(`Equipamento: ${document.getElementById('eqMar').value} ${document.getElementById('eqMod').value} (S/N: ${document.getElementById('eqSer').value})`, 15, 76);
+    doc.setFont(undefined, 'bold'); doc.text("CLIENTE:", 15, 45); doc.setFont(undefined, 'normal');
+    doc.text(document.getElementById('cli-nome').value, 15, 50);
+    doc.text(document.getElementById('cli-end').value, 15, 55);
 
-    doc.setFont(undefined, 'bold'); doc.text("RELATÓRIO TÉCNICO", 15, 90); doc.setFont(undefined, 'normal');
-    doc.text(`Tempo Líquido: ${document.getElementById('timerDisplay').innerText}`, 15, 97);
-    doc.text(`Defeito: ${document.getElementById('osDef').value}`, 15, 104);
-    const srvLines = doc.splitTextToSize(`Serviço Realizado: ${document.getElementById('osSrv').value}`, 180); doc.text(srvLines, 15, 111);
+    doc.setFont(undefined, 'bold'); doc.text("EQUIPAMENTO:", 15, 65); doc.setFont(undefined, 'normal');
+    doc.text(`${document.getElementById('eq-marca').value} - ${document.getElementById('eq-modelo').value}`, 15, 70);
+    doc.text(`Série: ${document.getElementById('eq-serie').value}`, 15, 75);
 
-    if(sigImg) {
-        doc.text("Assinatura do Cliente:", 15, 200); doc.addImage(sigImg, 'PNG', 15, 205, 60, 25);
-        doc.text(`Responsável: ${document.getElementById('recNome').value} - DOC: ${document.getElementById('recDoc').value}`, 15, 240);
+    doc.setFont(undefined, 'bold'); doc.text("RELATÓRIO TÉCNICO:", 15, 85); doc.setFont(undefined, 'normal');
+    doc.text("Tempo de Atendimento: " + document.getElementById('timer-display').innerText, 15, 90);
+    doc.text("Defeito: " + document.getElementById('rel-defeito').value, 15, 95);
+    const srv = doc.splitTextToSize("Serviço: " + document.getElementById('rel-servico').value, 180);
+    doc.text(srv, 15, 100);
+
+    if(signatureData) {
+        doc.text("Assinatura do Cliente:", 15, 200);
+        doc.addImage(signatureData, 'PNG', 15, 205, 60, 25);
+        doc.text(`Recebido por: ${document.getElementById('sig-contato').value}`, 15, 235);
+        doc.text(`Doc: ${document.getElementById('sig-doc').value}`, 15, 240);
     }
-    doc.save(`OS_MARLIFT_${osIdStr}.pdf`);
+
+    doc.save(`OS_MARLIFT_${osNum}.pdf`);
 }
 
-function copyScriptCode() {
-    const script = `function doPost(e) {
+function copyAppScript() {
+    const code = `function doPost(e) {
   var data = JSON.parse(e.postData.contents);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
-  sheet.appendRow([data.numero, data.data, data.cliente, data.tempo, data.campos.srv]);
+  sheet.appendRow([data.num, data.data, data.cliente, data.tempo, data.servico]);
   return ContentService.createTextOutput("OK");
 }`;
-    navigator.clipboard.writeText(script); alert('Código Copiado!');
+    navigator.clipboard.writeText(code); alert('Código copiado!');
 }
 
-function limparTudo() { if(confirm("Apagar todos os dados?")) { localStorage.clear(); location.reload(); } }
+function clearData() { if(confirm('Apagar tudo?')) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
