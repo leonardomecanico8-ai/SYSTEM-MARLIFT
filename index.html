@@ -9,299 +9,309 @@
     <style>
         :root {
             --primary: #ff6600; /* Laranja Marlift */
+            --primary-dark: #cc5200;
             --dark: #1a1a1a;
             --zinc: #2d2d2d;
-            --gray-light: #f3f4f6;
+            --bg: #121212;
             --white: #ffffff;
-            --success: #10b981;
-            --danger: #ef4444;
+            --gray: #a0a0a0;
+            --radius: 12px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--gray-light); color: var(--dark); overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg); color: var(--white); overflow-x: hidden; }
 
-        /* TELA DE LOGIN */
-        #loginScreen { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--white); padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; border-top: 8px solid var(--primary); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .login-card h2 { font-weight: 900; letter-spacing: -1px; margin-bottom: 20px; }
-        .login-card input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 24px; text-align: center; letter-spacing: 5px; margin-bottom: 20px; }
+        /* TELA DE LOGIN - BLOQUEIO INICIAL */
+        #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--zinc); padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; border: 1px solid #444; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .login-card h2 { color: var(--primary); font-size: 24px; font-weight: 900; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .login-card input { background: #000; border: 2px solid #444; color: var(--primary); font-size: 28px; text-align: center; letter-spacing: 8px; margin-bottom: 20px; border-radius: 12px; padding: 12px; width: 100%; outline: none; }
+        .login-card input:focus { border-color: var(--primary); }
 
-        /* HEADER FIXO */
-        .header { background: var(--dark); color: white; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--primary); }
+        /* CABEÇALHO FIXO */
+        .header { background: var(--dark); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--primary); }
         .header-top { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 16px; font-weight: 900; letter-spacing: 1px; }
-        .os-tag { background: var(--primary); padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 14px; }
+        .header h1 { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; }
+        .os-num-tag { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 14px; }
 
-        .nav-tabs { display: flex; background: #252525; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; color: #888; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .nav-tabs { display: flex; background: #000; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; color: var(--gray); font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: rgba(255,102,0,0.1); }
 
-        /* CONTEÚDO */
-        .app-container { max-width: 640px; margin: 0 auto; padding: 15px 15px 100px; display: none; }
-        .card { background: white; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; overflow: hidden; }
-        .card-header { padding: 12px 18px; background: #f9fafb; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
-        .card-header i { color: var(--primary); }
-        .card-header h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #444; }
+        /* CONTEÚDO APP */
+        .app-container { max-width: 640px; margin: 0 auto; padding: 20px 15px 120px; display: none; }
+        .card { background: var(--zinc); border-radius: 16px; margin-bottom: 20px; border: 1px solid #444; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card-header { background: #252525; padding: 14px 18px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 12px; }
+        .card-header i { color: var(--primary); font-size: 16px; }
+        .card-header h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #ddd; }
 
-        /* CRONOMETRO */
-        .timer-box { background: var(--dark); border-radius: 15px; padding: 25px; text-align: center; color: white; }
-        .timer-val { font-family: monospace; font-size: 48px; color: var(--primary); font-weight: 700; }
-        .timer-logs { margin-top: 15px; text-align: left; font-size: 11px; color: #aaa; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; max-height: 80px; overflow-y: auto; }
+        /* TIMER BOX */
+        .timer-panel { background: #000; border-radius: 15px; padding: 25px; text-align: center; border: 1px solid #333; }
+        .timer-val { font-family: 'Courier New', monospace; font-size: 52px; color: var(--primary); font-weight: 800; margin-bottom: 15px; }
+        .timer-log { text-align: left; font-size: 11px; color: #777; background: #111; padding: 10px; border-radius: 8px; max-height: 100px; overflow-y: auto; margin-top: 15px; border: 1px solid #222; }
 
-        /* INPUTS */
-        .card-body { padding: 18px; }
-        .form-group { margin-bottom: 15px; }
-        .label { display: block; font-size: 11px; font-weight: 800; color: #666; text-transform: uppercase; margin-bottom: 6px; }
-        .input { width: 100%; padding: 13px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 16px; outline: none; }
-        .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
-        .input:disabled { background: #f3f4f6; color: #999; border-color: #ddd; cursor: not-allowed; }
+        /* FORMULÁRIO */
+        .card-body { padding: 20px; }
+        .form-group { margin-bottom: 18px; }
+        .label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; }
+        .input { width: 100%; padding: 14px; background: #111; border: 1px solid #444; border-radius: 10px; color: white; font-size: 16px; transition: 0.3s; outline: none; }
+        .input:focus { border-color: var(--primary); }
+        .input:disabled { background: #1a1a1a; color: #666; border-color: #333; cursor: not-allowed; }
 
         /* FOTOS */
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .photo-item { aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #ddd; }
+        .photo-item { aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #444; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ASSINATURA FULLSCREEN */
+        /* MODAL ASSINATURA FULLSCREEN */
         #modalSig { display: none; position: fixed; inset: 0; background: white; z-index: 20000; flex-direction: column; }
         .sig-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .sig-body { flex: 1; background: #fff; touch-action: none; position: relative; }
-        #canvasAssinatura { width: 100%; height: 100%; cursor: crosshair; }
-        .sig-footer { padding: 20px; display: flex; gap: 10px; background: #f3f4f6; border-top: 1px solid #ddd; }
+        #canvasAssinatura { flex: 1; width: 100%; background: #fff; touch-action: none; cursor: crosshair; }
+        .sig-footer { padding: 20px; display: flex; gap: 15px; background: #eee; }
 
         /* BOTÕES */
-        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; font-size: 14px; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; transition: 0.2s; text-transform: uppercase; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: var(--zinc); color: white; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-secondary { background: #444; color: white; }
         .btn-warning { background: #f59e0b; color: white; }
         .btn-danger { background: #ef4444; color: white; }
-        .btn:disabled { opacity: 0.4; }
+        .btn:disabled { opacity: 0.3; pointer-events: none; }
 
         /* NAV INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; border-top: 3px solid var(--primary); padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { flex: 1; padding: 15px; text-align: center; color: #777; background: none; border: none; font-size: 10px; font-weight: 800; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; border-top: 3px solid var(--primary); }
+        .nav-link { flex: 1; padding: 15px; text-align: center; color: var(--gray); border: none; background: none; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .nav-link.active { color: var(--primary); }
+        .nav-link i { display: block; font-size: 20px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- TELA DE LOGIN -->
 <div id="loginScreen">
     <div class="login-card">
-        <i class="fa-solid fa-screwdriver-wrench" style="font-size: 40px; color: var(--primary); margin-bottom: 10px;"></i>
+        <i class="fa-solid fa-screwdriver-wrench" style="font-size: 40px; color: var(--primary); margin-bottom: 20px;"></i>
         <h2>MARLIFT SERVICE</h2>
-        <p style="font-size: 13px; color: #888; margin-bottom: 25px;">Acesso Restrito ao Técnico</p>
-        <input type="password" id="loginPass" placeholder="••••••" maxlength="8">
-        <button class="btn btn-primary" onclick="checkLogin()">ACESSAR SISTEMA</button>
+        <input type="password" id="passCode" placeholder="••••••" maxlength="8">
+        <button class="btn btn-primary" onclick="autenticar()">ACESSAR SISTEMA</button>
     </div>
 </div>
 
-<div id="appMain" class="app-container">
+<div id="appBody" class="app-container">
     <header class="header">
         <div class="header-top">
             <h1>MARLIFT SERVICE OS</h1>
-            <div id="headerOSNum" class="os-tag">#0001</div>
+            <div id="osNumDisplay" class="os-num-tag">#0001</div>
         </div>
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('tab-os', this)">ORDEM SERVIÇO</button>
-            <button class="tab-btn" onclick="switchTab('tab-hist', this)">HISTÓRICO</button>
-            <button class="tab-btn" onclick="switchTab('tab-cfg', this)">AJUSTES</button>
+            <button class="tab-btn active" onclick="showTab('tab-os', this)">ORDEM SERVIÇO</button>
+            <button class="tab-btn" onclick="showTab('tab-hist', this)">HISTÓRICO</button>
+            <button class="tab-btn" onclick="showTab('tab-cfg', this)">AJUSTES</button>
         </div>
     </header>
 
-    <!-- ABA: NOVA OS -->
-    <div id="tab-os" class="tab-pane" style="display: block; margin-top: 15px;">
+    <!-- ABA: ORDEM DE SERVIÇO -->
+    <div id="tab-os" class="tab-pane" style="display: block;">
+        
         <!-- CRONOMETRO -->
-        <div class="timer-box">
+        <div class="timer-panel" style="margin-top: 20px;">
             <div id="timerDisplay" class="timer-val">00:00:00</div>
-            <div id="timerLabel" style="font-size: 11px; color: var(--primary); margin-bottom: 15px;">AGUARDANDO TÉCNICO</div>
+            <div id="timerStatus" style="font-size: 11px; color: var(--primary); margin-bottom: 15px; font-weight: 800;">AGUARDANDO INÍCIO</div>
             <div style="display: flex; gap: 10px;">
                 <button id="btnStart" class="btn btn-primary" onclick="timerStart()"><i class="fa-solid fa-play"></i> INICIAR</button>
-                <button id="btnPause" class="btn btn-secondary" onclick="openPauseModal()" disabled><i class="fa-solid fa-pause"></i> PAUSAR</button>
+                <button id="btnPause" class="btn btn-secondary" onclick="abrirModalPausa()" disabled><i class="fa-solid fa-pause"></i> PAUSAR</button>
             </div>
-            <div id="timerLogs" class="timer-logs">Sem registros no momento...</div>
+            <div id="timerLog" class="timer-log">Sem registros no atendimento atual.</div>
         </div>
 
-        <div class="card" style="margin-top: 20px;">
-            <div class="card-header"><i class="fa-solid fa-user"></i><h3>Cliente & Equipamento</h3></div>
+        <!-- DADOS CLIENTE -->
+        <div class="card" style="margin-top: 25px;">
+            <div class="card-header"><i class="fa-solid fa-building"></i><h3>Dados do Cliente</h3></div>
             <div class="card-body">
-                <div class="form-group"><label class="label">Cliente</label><input type="text" id="cliNome" class="input os-field"></div>
-                <div class="form-group"><label class="label">Local do Serviço</label><input type="text" id="cliEnd" class="input os-field"></div>
+                <div class="form-group"><label class="label">Cliente / Razão Social</label><input type="text" id="cliNome" class="input os-field"></div>
+                <div class="form-group"><label class="label">Local do Atendimento</label><input type="text" id="cliEnd" class="input os-field"></div>
                 <div style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex:1"><label class="label">Marca</label><input type="text" id="eqMar" class="input os-field"></div>
                     <div class="form-group" style="flex:1"><label class="label">Modelo</label><input type="text" id="eqMod" class="input os-field"></div>
                 </div>
-                <div class="form-group"><label class="label">Nº de Série</label><input type="text" id="eqSer" class="input os-field"></div>
+                <div class="form-group"><label class="label">Número de Série</label><input type="text" id="eqSer" class="input os-field"></div>
             </div>
         </div>
 
+        <!-- SERVIÇO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-file-contract"></i><h3>Relatório de Atendimento</h3></div>
+            <div class="card-header"><i class="fa-solid fa-tools"></i><h3>Relatório Técnico</h3></div>
             <div class="card-body">
-                <div class="form-group"><label class="label">Defeito Apresentado</label><input type="text" id="osDef" class="input os-field"></div>
+                <div class="form-group"><label class="label">Defeito Reclamado</label><input type="text" id="osDef" class="input os-field"></div>
                 <div class="form-group"><label class="label">Serviço Realizado</label><textarea id="osSrv" class="input os-field" rows="4"></textarea></div>
-                <div class="form-group"><label class="label">Peças Aplicadas</label><textarea id="osPec" class="input os-field" rows="2"></textarea></div>
+                <div class="form-group"><label class="label">Peças e Materiais</label><textarea id="osPec" class="input os-field" rows="2"></textarea></div>
             </div>
         </div>
 
+        <!-- FOTOS -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-camera"></i><h3>Fotos / Evidências</h3></div>
+            <div class="card-header"><i class="fa-solid fa-camera"></i><h3>Fotos (Evidências)</h3></div>
             <div class="card-body">
-                <input type="file" id="fotoInput" accept="image/*" multiple style="display:none" onchange="handleFotos(this)">
+                <input type="file" id="fotoInput" accept="image/*" multiple style="display:none" onchange="capturarFotos(this)">
                 <button class="btn btn-outline os-field" onclick="document.getElementById('fotoInput').click()"><i class="fa-solid fa-camera"></i> ADICIONAR FOTOS</button>
-                <div id="gridFotos" class="photo-grid"></div>
+                <div id="fotosGrid" class="photo-grid"></div>
             </div>
         </div>
 
+        <!-- ENCERRAMENTO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-signature"></i><h3>Encerramento</h3></div>
+            <div class="card-header"><i class="fa-solid fa-user-check"></i><h3>Encerramento</h3></div>
             <div class="card-body">
-                <div class="form-group"><label class="label">Nome do Contato</label><input type="text" id="recNome" class="input os-field"></div>
+                <div class="form-group"><label class="label">Nome do Contato (Recebedor)</label><input type="text" id="recNome" class="input os-field"></div>
                 <div class="form-group"><label class="label">RG ou CPF</label><input type="text" id="recDoc" class="input os-field"></div>
                 
-                <div id="previewSig" style="width:100%; height:120px; border:2px dashed #ddd; border-radius:12px; margin: 15px 0; display:flex; align-items:center; justify-content:center; background:#fafafa; overflow:hidden;">
-                    <span style="color:#aaa; font-size: 11px;">Assinatura Digital</span>
+                <label class="label">Assinatura Digital</label>
+                <div id="previewSig" style="width:100%; height:120px; border:2px dashed #444; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; background:#111; overflow:hidden;">
+                    <span style="color:#555; font-size: 11px;">Assinatura não coletada</span>
                 </div>
 
-                <button id="btnSig" class="btn btn-warning os-field" onclick="abrirModalAssinatura()"><i class="fa-solid fa-signature"></i> COLETAR ASSINATURA</button>
+                <button id="btnAbrirSig" class="btn btn-warning os-field" onclick="abrirAssinatura()"><i class="fa-solid fa-pen-nib"></i> COLETAR ASSINATURA</button>
                 
                 <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
                     <button class="btn btn-secondary" onclick="salvarHistorico()"><i class="fa-solid fa-floppy-disk"></i> SALVAR NO HISTÓRICO</button>
-                    <button id="btnPdf" class="btn btn-primary" onclick="gerarPDF()" disabled><i class="fa-solid fa-file-pdf"></i> GERAR PDF E BAIXAR</button>
+                    <button id="btnPdf" class="btn btn-primary" onclick="gerarPDF()" disabled><i class="fa-solid fa-file-pdf"></i> GERAR PDF FINAL</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ABA: HISTÓRICO -->
-    <div id="tab-hist" class="tab-pane" style="display: none; margin-top: 15px;">
-        <div id="renderHist"></div>
+    <div id="tab-hist" class="tab-pane" style="display: none;">
+        <div id="listaHistorico" style="margin-top: 15px;"></div>
     </div>
 
-    <!-- ABA: CONFIG -->
-    <div id="tab-cfg" class="tab-pane" style="display: none; margin-top: 15px;">
-        <div class="card">
-            <div class="card-header"><i class="fa-solid fa-gears"></i><h3>Ajustes do Sistema</h3></div>
+    <!-- ABA: AJUSTES -->
+    <div id="tab-cfg" class="tab-pane" style="display: none;">
+        <div class="card" style="margin-top: 15px;">
+            <div class="card-header"><i class="fa-solid fa-cloud"></i><h3>Sincronização</h3></div>
             <div class="card-body">
-                <div class="form-group"><label class="label">Nome da Empresa (Relatório)</label><input type="text" id="cfgEmpresa" class="input" value="MARLIFT SERVICE"></div>
-                <div class="form-group"><label class="label">URL do Google Sheets</label><input type="text" id="cfgUrl" class="input" placeholder="https://script.google.com/..."></div>
+                <div class="form-group"><label class="label">Google WebApp URL</label><input type="text" id="cfgUrl" class="input" placeholder="https://script.google.com/..."></div>
+                <button class="btn btn-outline" style="font-size:11px" onclick="copiarGoogleScript()"><i class="fa-solid fa-code"></i> Copiar Script da Planilha</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-gears"></i><h3>Parâmetros</h3></div>
+            <div class="card-body">
                 <div class="form-group"><label class="label">Próximo Nº de OS</label><input type="number" id="cfgNextOS" class="input" onchange="setNextOS(this.value)"></div>
-                <button class="btn btn-outline" style="margin-bottom:10px" onclick="copyScriptCode()">COPIAR SCRIPT GOOGLE</button>
-                <hr style="margin:20px 0;">
-                <button class="btn btn-danger" onclick="limparTudo()">APAGAR TODOS OS DADOS</button>
-                <button class="btn btn-secondary" style="margin-top:15px" onclick="logout()">SAIR DO SISTEMA</button>
+                <div class="form-group"><label class="label">Nome da Empresa</label><input type="text" id="cfgEmpresa" class="input" value="MARLIFT SERVICE"></div>
+                <button class="btn btn-danger" onclick="limparTudo()"><i class="fa-solid fa-trash-can"></i> APAGAR TODOS OS DADOS</button>
+                <button class="btn btn-secondary" style="margin-top:15px" onclick="logout()"><i class="fa-solid fa-power-off"></i> SAIR DO SISTEMA</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('tab-os', this)"><i class="fa-solid fa-file-invoice"></i>NOVA OS</button>
-        <button class="nav-item" onclick="switchTab('tab-hist', this)"><i class="fa-solid fa-history"></i>HISTÓRICO</button>
-        <button class="nav-item" onclick="switchTab('tab-cfg', this)"><i class="fa-solid fa-cog"></i>AJUSTES</button>
+        <button class="nav-link active" onclick="switchTab('tab-os', this)"><i class="fa-solid fa-file-invoice"></i>OS</button>
+        <button class="nav-link" onclick="switchTab('tab-hist', this)"><i class="fa-solid fa-history"></i>HISTÓRICO</button>
+        <button class="nav-link" onclick="switchTab('tab-cfg', this)"><i class="fa-solid fa-sliders"></i>AJUSTES</button>
     </nav>
 </div>
 
-<!-- MODAL ASSINATURA FULLSCREEN -->
-<div id="modalSig">
+<!-- MODAL ASSINATURA -->
+<div id="modalSig" class="modal">
     <div class="sig-header">
-        <h3>ASSINATURA DO CLIENTE</h3>
-        <button onclick="fecharModalAssinatura()" style="background:none; border:none; color:white; font-size:30px;">&times;</button>
+        <h3>ASSINATURA DIGITAL (PAISAGEM)</h3>
+        <button onclick="fecharAssinatura()" style="background:none; border:none; color:white; font-size:30px;">&times;</button>
     </div>
     <div class="sig-body"><canvas id="canvasAssinatura"></canvas></div>
     <div class="sig-footer">
-        <button class="btn btn-outline" onclick="limparCanvas()">LIMPAR</button>
-        <button class="btn btn-primary" onclick="salvarAssinatura()">SALVAR ASSINATURA</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="limparCanvas()">LIMPAR</button>
+        <button class="btn btn-primary" style="flex:2" onclick="finalizarAssinatura()">SALVAR ASSINATURA</button>
     </div>
 </div>
 
 <!-- MODAL MOTIVO PAUSA -->
 <div id="modalPause" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:30000; align-items:center; justify-content:center; padding:20px;">
-    <div class="card" style="width:100%; max-width:320px;">
+    <div class="card" style="width:100%; max-width:320px; border-top: 5px solid var(--primary);">
         <div class="card-header"><h3>MOTIVO DA PAUSA</h3></div>
         <div class="card-body">
-            <select id="selectPause" class="input" style="margin-bottom:20px;">
+            <select id="motivoPausa" class="input" style="margin-bottom:20px;">
                 <option value="Intervalo Almoço">Almoço</option>
                 <option value="Aguardando Peça">Aguardando Peça</option>
-                <option value="Aguardando Liberar Máquina">Aguardando Equipamento</option>
+                <option value="Aguardando Equipamento">Aguardando Equipamento</option>
                 <option value="Aguardando Aprovação">Aguardando Aprovação</option>
             </select>
-            <button class="btn btn-primary" onclick="confirmPause()">PAUSAR AGORA</button>
-            <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('modalPause').style.display='none'">CANCELAR</button>
+            <button class="btn btn-primary" onclick="confirmarPausa()">CONFIRMAR PAUSA</button>
+            <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('modalPause').style.display='none'">CANCELAR</button>
         </div>
     </div>
 </div>
 
 <script>
-let timerInterval, seconds = 0, timerState = 'idle', logs = [];
-let fotosArray = [], signatureImg = null;
+// --- ESTADO ---
+let timerInterval, seconds = 0, timerState = 'idle', timerLog = [];
+let fotosList = [], sigImg = null;
 let canvas, ctx, drawing = false;
-let currentOS = parseInt(localStorage.getItem('ml_os_counter')) || 1;
+let nextOSNum = parseInt(localStorage.getItem('ml_os_counter')) || 1;
 
-// LOGIN
-const loginInput = document.getElementById('loginPass');
-loginInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkLogin(); });
+// --- LOGIN ---
+document.getElementById('passCode').addEventListener('keyup', (e) => { if(e.key === 'Enter') autenticar(); });
 
-function checkLogin() {
-    const p = loginInput.value;
-    if(p.length >= 6 && p === '123456') {
+function autenticar() {
+    const p = document.getElementById('passCode').value;
+    if(p.length >= 6 && p === '123456') { // Senha padrão
         document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appMain').style.display = 'block';
-        localStorage.setItem('ml_auth', 'ok');
-        updateHeaderOS();
-    } else { alert('Senha Incorreta!'); }
+        document.getElementById('appBody').style.display = 'block';
+        localStorage.setItem('ml_logged', 'true');
+        updateOSHeader();
+    } else { alert('Acesso Negado. Senha de no mínimo 6 dígitos.'); }
 }
-if(localStorage.getItem('ml_auth')) { 
+
+if(localStorage.getItem('ml_logged') === 'true') {
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appMain').style.display = 'block';
-    updateHeaderOS();
+    document.getElementById('appBody').style.display = 'block';
+    updateOSHeader();
 }
 
-function logout() { localStorage.removeItem('ml_auth'); location.reload(); }
+function logout() { localStorage.removeItem('ml_logged'); location.reload(); }
 
-// NAVEGAÇÃO
+// --- NAVEGAÇÃO ---
 function switchTab(id, el) {
-    document.querySelectorAll('.tab-pane').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
     document.getElementById(id).style.display = 'block';
-    document.querySelectorAll('.nav-item, .tab-btn').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.tab-btn, .nav-link').forEach(n => n.classList.remove('active'));
     el.classList.add('active');
-    if(id === 'tab-hist') renderHistorico();
+    if(id === 'tab-hist') renderHist();
 }
 
-// CRONOMETRO
+// --- CRONOMETRO ---
 function timerStart() {
     if(timerState === 'running') return;
     timerState = 'running';
     document.getElementById('btnStart').disabled = true;
     document.getElementById('btnPause').disabled = false;
-    document.getElementById('timerLabel').innerText = "EM ATENDIMENTO";
-    logs.push("▶ Início: " + new Date().toLocaleTimeString());
-    renderLogs();
+    document.getElementById('timerStatus').innerText = "EM ATENDIMENTO";
+    timerLog.push(`▶ Início: ${new Date().toLocaleTimeString()}`);
+    updateLogs();
     timerInterval = setInterval(() => {
         seconds++;
         document.getElementById('timerDisplay').innerText = new Date(seconds * 1000).toISOString().substr(11, 8);
     }, 1000);
 }
 
-function openPauseModal() { document.getElementById('modalPause').style.display = 'flex'; }
+function abrirModalPausa() { document.getElementById('modalPause').style.display = 'flex'; }
 
-function confirmPause() {
+function confirmarPausa() {
     clearInterval(timerInterval);
     timerState = 'paused';
-    const reason = document.getElementById('selectPause').value;
-    logs.push(`⏸ Pausa (${reason}): ` + new Date().toLocaleTimeString());
-    renderLogs();
-    document.getElementById('timerLabel').innerText = "PAUSADO (" + reason.toUpperCase() + ")";
+    const m = document.getElementById('motivoPausa').value;
+    timerLog.push(`⏸ Pausa (${m}): ${new Date().toLocaleTimeString()}`);
+    updateLogs();
+    document.getElementById('timerStatus').innerText = "PAUSADO (" + m.toUpperCase() + ")";
     document.getElementById('btnStart').disabled = false;
     document.getElementById('btnStart').innerHTML = '<i class="fa-solid fa-rotate-left"></i> RETOMAR';
     document.getElementById('btnPause').disabled = true;
     document.getElementById('modalPause').style.display = 'none';
 }
 
-function renderLogs() { document.getElementById('timerLogs').innerHTML = logs.join('<br>'); }
+function updateLogs() { document.getElementById('timerLog').innerHTML = timerLog.join('<br>'); }
 
-// ASSINATURA FULLSCREEN
-function abrirModalAssinatura() {
+// --- ASSINATURA ---
+function abrirAssinatura() {
     document.getElementById('modalSig').style.display = 'flex';
     canvas = document.getElementById('canvasAssinatura');
     ctx = canvas.getContext('2d');
@@ -309,67 +319,74 @@ function abrirModalAssinatura() {
     canvas.height = canvas.parentElement.offsetHeight;
     ctx.lineWidth = 3; ctx.strokeStyle = "#000"; ctx.lineCap = 'round';
 
-    const events = ['mousedown', 'mousemove', 'mouseup', 'touchstart', 'touchmove', 'touchend'];
-    events.forEach(ev => canvas.addEventListener(ev, handleSig, false));
+    ['mousedown', 'touchstart'].forEach(e => canvas.addEventListener(e, startDraw));
+    ['mousemove', 'touchmove'].forEach(e => canvas.addEventListener(e, draw));
+    ['mouseup', 'touchend'].forEach(e => canvas.addEventListener(e, stopDraw));
 }
 
-function handleSig(e) {
+function startDraw(e) { 
+    drawing = true; 
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    ctx.beginPath(); ctx.moveTo(x, y); 
+}
+function draw(e) {
+    if(!drawing) return;
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
     const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
     const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-    if(e.type === 'mousedown' || e.type === 'touchstart') { drawing = true; ctx.beginPath(); ctx.moveTo(x, y); }
-    else if((e.type === 'mousemove' || e.type === 'touchmove') && drawing) { ctx.lineTo(x, y); ctx.stroke(); }
-    else { drawing = false; }
+    ctx.lineTo(x, y); ctx.stroke();
 }
-
+function stopDraw() { drawing = false; }
 function limparCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); }
 
-function salvarAssinatura() {
-    signatureImg = canvas.toDataURL();
-    document.getElementById('previewSig').innerHTML = `<img src="${signatureImg}" style="height:100%">`;
+function finalizarAssinatura() {
+    sigImg = canvas.toDataURL();
+    document.getElementById('previewSig').innerHTML = `<img src="${sigImg}" style="height:100%">`;
     clearInterval(timerInterval);
-    logs.push("🏁 Fim: " + new Date().toLocaleTimeString() + " | Total: " + document.getElementById('timerDisplay').innerText);
-    renderLogs();
-    lockForm(true);
-    fecharModalAssinatura();
+    timerLog.push(`🏁 Fim: ${new Date().toLocaleTimeString()} | Total: ${document.getElementById('timerDisplay').innerText}`);
+    updateLogs();
+    bloquearEdicao(true);
+    fecharAssinatura();
 }
 
-function fecharModalAssinatura() { document.getElementById('modalSig').style.display = 'none'; }
+function fecharAssinatura() { document.getElementById('modalSig').style.display = 'none'; }
 
-function lockForm(lock) {
-    document.querySelectorAll('.os-field').forEach(f => f.disabled = lock);
+function bloquearEdicao(lock) {
+    document.querySelectorAll('.os-field').forEach(i => i.disabled = lock);
     document.getElementById('btnPdf').disabled = !lock;
     document.getElementById('btnStart').disabled = lock;
 }
 
-// FOTOS
-function handleFotos(input) {
+// --- FOTOS ---
+function capturarFotos(input) {
     Array.from(input.files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = (e) => { fotosArray.push(e.target.result); renderFotos(); };
+        reader.onload = (e) => { fotosList.push(e.target.result); renderFotos(); };
         reader.readAsDataURL(file);
     });
 }
 function renderFotos() {
-    document.getElementById('gridFotos').innerHTML = fotosArray.map((src, i) => `
-        <div class="photo-item"><img src="${src}"><button onclick="fotosArray.splice(${i},1);renderFotos()" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px;">&times;</button></div>`).join('');
+    document.getElementById('fotosGrid').innerHTML = fotosList.map((f, i) => `
+        <div class="photo-item"><img src="${f}"><button onclick="fotosList.splice(${i},1);renderFotos()" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px;">&times;</button></div>`).join('');
 }
 
-// SALVAMENTO E HISTORICO
-function setNextOS(val) { currentOS = parseInt(val) || currentOS; localStorage.setItem('ml_os_counter', currentOS); updateHeaderOS(); }
+// --- SALVAMENTO ---
+function setNextOS(val) { nextOSNum = parseInt(val) || nextOSNum; localStorage.setItem('ml_os_counter', nextOSNum); updateOSHeader(); }
 
-function updateHeaderOS() { 
-    const str = "#" + currentOS.toString().padStart(4, '0');
-    document.getElementById('headerOSNum').innerText = str;
-    document.getElementById('cfgNextOS').value = currentOS;
+function updateOSHeader() {
+    const s = "#" + nextOSNum.toString().padStart(4, '0');
+    document.getElementById('headerOSNum').innerText = s;
+    document.getElementById('cfgNextOS').value = nextOSNum;
 }
 
 function salvarHistorico() {
-    const data = {
-        id: Date.now(), numero: currentOS, cliente: document.getElementById('cliNome').value, 
-        dataOS: new Date().toLocaleString(), tempo: document.getElementById('timerDisplay').innerText,
-        sig: signatureImg, fotos: fotosArray, logs: logs, seconds: seconds,
+    const os = {
+        id: Date.now(), numero: nextOSNum, cliente: document.getElementById('cliNome').value,
+        data: new Date().toLocaleString(), tempo: document.getElementById('timerDisplay').innerText,
+        sig: sigImg, fotos: fotosList, logs: timerLog, sec: seconds,
         campos: {
             end: document.getElementById('cliEnd').value, mar: document.getElementById('eqMar').value,
             mod: document.getElementById('eqMod').value, ser: document.getElementById('eqSer').value,
@@ -378,36 +395,35 @@ function salvarHistorico() {
             doc: document.getElementById('recDoc').value
         }
     };
-    let h = JSON.parse(localStorage.getItem('ml_history') || '[]');
-    h.unshift(data);
-    localStorage.setItem('ml_history', JSON.stringify(h));
-    currentOS++;
-    setNextOS(currentOS);
-    syncSheets(data);
+    let h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
+    h.unshift(os);
+    localStorage.setItem('ml_hist_list', JSON.stringify(h));
+    nextOSNum++; setNextOS(nextOSNum);
+    sincronizar(os);
     alert('OS Gravada com Sucesso!');
 }
 
-async function syncSheets(os) {
+function sincronizar(os) {
     const url = document.getElementById('cfgUrl').value;
     if(!url) return;
     try { fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(os) }); } catch(e) {}
 }
 
-function renderHistorico() {
-    const h = JSON.parse(localStorage.getItem('ml_history') || '[]');
-    document.getElementById('renderHist').innerHTML = h.map(o => `
+function renderHist() {
+    const h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
+    document.getElementById('listaHistorico').innerHTML = h.map(o => `
         <div class="card" style="padding:15px; margin-bottom:10px;">
             <div style="font-weight:bold; color:var(--primary)">OS #${o.numero.toString().padStart(4,'0')} - ${o.cliente}</div>
-            <div style="font-size:12px; color:#777">${o.dataOS} | Tempo: ${o.tempo}</div>
+            <div style="font-size:12px; color:#888">${o.data} | Tempo: ${o.tempo}</div>
             <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-secondary" style="padding:8px" onclick="editarOS(${o.id})">EDITAR/RESGATAR</button>
+                <button class="btn btn-secondary" style="padding:8px" onclick="resgatarOS(${o.id})">EDITAR/RESGATAR</button>
                 <button class="btn btn-danger" style="padding:8px; width:50px" onclick="deletarOS(${o.id})"><i class="fa-solid fa-trash"></i></button>
             </div>
         </div>`).join('');
 }
 
-function editarOS(id) {
-    const h = JSON.parse(localStorage.getItem('ml_history') || '[]');
+function resgatarOS(id) {
+    const h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
     const o = h.find(x => x.id === id);
     if(!o) return;
     document.getElementById('cliNome').value = o.cliente;
@@ -420,62 +436,64 @@ function editarOS(id) {
     document.getElementById('osPec').value = o.campos.pec;
     document.getElementById('recNome').value = o.campos.rec;
     document.getElementById('recDoc').value = o.campos.doc;
-    seconds = o.seconds; document.getElementById('timerDisplay').innerText = o.tempo;
-    logs = o.logs; renderLogs();
-    fotosArray = o.fotos; renderFotos();
-    signatureImg = o.sig;
-    if(signatureImg) {
-        document.getElementById('previewSig').innerHTML = `<img src="${signatureImg}" style="height:100%">`;
-        lockForm(true);
-    } else { lockForm(false); }
+    seconds = o.sec; document.getElementById('timerDisplay').innerText = o.tempo;
+    timerLog = o.logs; updateLogs();
+    fotosList = o.fotos; renderFotos();
+    sigImg = o.sig;
+    if(sigImg) {
+        document.getElementById('previewSig').innerHTML = `<img src="${sigImg}" style="height:100%">`;
+        bloquearEdicao(true);
+    } else { bloquearEdicao(false); }
     switchTab('tab-os', document.querySelector('.nav-item'));
 }
 
-function deletarOS(id) { if(confirm('Excluir OS?')) { 
-    let h = JSON.parse(localStorage.getItem('ml_history') || '[]');
-    h = h.filter(x => x.id !== id);
-    localStorage.setItem('ml_history', JSON.stringify(h)); renderHistorico(); 
-} }
+function deletarOS(id) {
+    if(confirm('Excluir OS permanentemente?')) {
+        let h = JSON.parse(localStorage.getItem('ml_hist_list') || '[]');
+        h = h.filter(x => x.id !== id);
+        localStorage.setItem('ml_hist_list', JSON.stringify(h)); renderHist();
+    }
+}
 
 // PDF
 function gerarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const osStr = "#" + (currentOS-1).toString().padStart(4, '0');
+    const osIdStr = "#" + (nextOSNum-1).toString().padStart(4, '0');
     
     doc.setFillColor(26, 26, 26); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255, 102, 0); doc.setFontSize(24); doc.text(document.getElementById('cfgEmpresa').value, 105, 25, { align: 'center' });
-    doc.setTextColor(255, 255, 255); doc.setFontSize(10); doc.text("ORDEM DE SERVIÇO: " + osStr, 105, 33, { align: 'center' });
+    doc.setTextColor(255, 102, 0); doc.setFontSize(26); doc.text(document.getElementById('cfgEmpresa').value, 105, 25, { align: 'center' });
+    doc.setTextColor(255, 255, 255); doc.setFontSize(11); doc.text("ORDEM DE SERVIÇO: " + osIdStr, 105, 33, { align: 'center' });
 
     doc.setTextColor(0,0,0); doc.setFontSize(12); doc.setFont(undefined, 'bold'); doc.text("CLIENTE", 15, 55); doc.setFont(undefined, 'normal');
     doc.text(`Cliente: ${document.getElementById('cliNome').value}`, 15, 62);
-    doc.text(`Endereço: ${document.getElementById('cliEnd').value}`, 15, 69);
-    doc.text(`Máquina: ${document.getElementById('eqMar').value} ${document.getElementById('eqMod').value} (S/N: ${document.getElementById('eqSer').value})`, 15, 76);
+    doc.text(`Local: ${document.getElementById('cliEnd').value}`, 15, 69);
+    doc.text(`Equipamento: ${document.getElementById('eqMar').value} ${document.getElementById('eqMod').value} (S/N: ${document.getElementById('eqSer').value})`, 15, 76);
 
     doc.setFont(undefined, 'bold'); doc.text("RELATÓRIO TÉCNICO", 15, 90); doc.setFont(undefined, 'normal');
-    doc.text(`Tempo Total: ${document.getElementById('timerDisplay').innerText}`, 15, 97);
+    doc.text(`Tempo Líquido: ${document.getElementById('timerDisplay').innerText}`, 15, 97);
     doc.text(`Defeito: ${document.getElementById('osDef').value}`, 15, 104);
-    const srv = doc.splitTextToSize(`Serviço: ${document.getElementById('osSrv').value}`, 180); doc.text(srv, 15, 111);
+    const srvLines = doc.splitTextToSize(`Serviço Realizado: ${document.getElementById('osSrv').value}`, 180); doc.text(srvLines, 15, 111);
 
-    if(signatureImg) {
-        doc.text("Assinatura do Cliente:", 15, 200); doc.addImage(signatureImg, 'PNG', 15, 205, 60, 25);
-        doc.text(`Recebido por: ${document.getElementById('recNome').value} (DOC: ${document.getElementById('recDoc').value})`, 15, 240);
+    if(sigImg) {
+        doc.text("Assinatura do Cliente:", 15, 200); doc.addImage(sigImg, 'PNG', 15, 205, 60, 25);
+        doc.text(`Responsável: ${document.getElementById('recNome').value} - DOC: ${document.getElementById('recDoc').value}`, 15, 240);
     }
-    doc.save(`OS_MARLIFT_${osStr}.pdf`);
+    doc.save(`OS_MARLIFT_${osIdStr}.pdf`);
 }
 
 function copyScriptCode() {
-    const sc = `function doPost(e) {
+    const script = `function doPost(e) {
   var data = JSON.parse(e.postData.contents);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
-  sheet.appendRow([data.numero, data.dataOS, data.cliente, data.tempo, data.campos.srv, data.campos.rec]);
+  sheet.appendRow([data.numero, data.data, data.cliente, data.tempo, data.campos.srv]);
   return ContentService.createTextOutput("OK");
 }`;
-    navigator.clipboard.writeText(sc); alert('Script Copiado!');
+    navigator.clipboard.writeText(script); alert('Código Copiado!');
 }
 
-function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
+function limparTudo() { if(confirm("Apagar todos os dados?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
