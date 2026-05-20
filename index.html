@@ -1,567 +1,481 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>MARLIFT SERVICE OS</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root {
-    --primary: #ff6600; /* Laranja Marlift */
-    --primary-dark: #cc5200;
-    --secondary: #374151; /* Cinza Escuro */
-    --dark: #111827;
-    --gray-bg: #f3f4f6;
-    --white: #ffffff;
-    --border: #d1d5db;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MARLIFT SERVICE OS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6600; /* Laranja Marlift */
+            --secondary: #374151; /* Cinza */
+            --dark: #111827;
+            --white: #ffffff;
+            --gray-light: #f3f4f6;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-body { background-color: var(--gray-bg); color: var(--dark); line-height: 1.5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--gray-light); color: var(--dark); }
 
-/* LOGIN SCREEN */
-#loginScreen { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-box { background: var(--white); padding: 40px 30px; border-radius: var(--radius); width: 100%; max-width: 400px; text-align: center; border-top: 5px solid var(--primary); }
-.login-logo { font-size: 40px; color: var(--primary); margin-bottom: 10px; }
+        /* TELA DE LOGIN */
+        #loginScreen { position: fixed; inset: 0; background: var(--dark); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--white); padding: 40px 30px; border-radius: 16px; width: 100%; max-width: 360px; text-align: center; border-top: 6px solid var(--primary); }
+        
+        /* HEADER */
+        .header { background: var(--dark); color: white; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--primary); }
+        .header-top { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .os-badge { background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 14px; }
 
-/* HEADER */
-.header { background: var(--dark); color: white; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
-.header-top { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
-.header-top h1 { font-size: 18px; font-weight: 800; letter-spacing: 1px; color: var(--white); }
+        .nav-tabs { display: flex; background: #1f2937; }
+        .tab-btn { flex: 1; padding: 14px; border: none; background: none; color: #9ca3af; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: rgba(255,102,0,0.1); }
 
-/* NAV TABS */
-.nav-tabs { display: flex; background: #1f2937; }
-.nav-tab { flex: 1; padding: 12px; text-align: center; color: #9ca3af; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-.nav-tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: rgba(255,102,0,0.05); }
+        /* CONTENT */
+        .app-container { max-width: 640px; margin: 0 auto; padding: 15px 15px 100px; display: none; }
+        .card { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 15px; border: 1px solid #e5e7eb; overflow: hidden; }
+        .card-header { padding: 12px 16px; background: #f9fafb; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 13px; text-transform: uppercase; color: var(--secondary); }
+        .card-header i { color: var(--primary); }
 
-/* CONTENT */
-.app { max-width: 640px; margin: 0 auto; padding-bottom: 100px; display: none; }
-.tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
-.tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* FORMS */
+        .card-body { padding: 16px; }
+        .form-group { margin-bottom: 12px; }
+        .label { display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
+        .input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; transition: 0.2s; }
+        .input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
+        .input:disabled { background: #f3f4f6; color: #9ca3af; }
 
-/* CARDS */
-.card { background: var(--white); border-radius: var(--radius); margin-bottom: 15px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid #e5e7eb; }
-.card-header { padding: 12px 16px; background: #f9fafb; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
-.card-header i { color: var(--primary); }
-.card-header h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--secondary); }
-.card-body { padding: 16px; }
+        /* TIMER BOX */
+        .timer-box { background: var(--dark); border-radius: 12px; padding: 20px; text-align: center; color: white; margin-bottom: 10px; }
+        .timer-val { font-family: monospace; font-size: 44px; color: var(--primary); font-weight: 700; }
+        .timer-log { text-align: left; font-size: 11px; color: #9ca3af; margin-top: 10px; max-height: 80px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; }
 
-/* FORMS */
-.form-group { margin-bottom: 15px; }
-.form-label { display: block; font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; margin-bottom: 5px; }
-.form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; transition: 0.2s; }
-.form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
-.form-control:disabled { background: #f3f4f6; color: #6b7280; cursor: not-allowed; }
+        /* BUTTONS */
+        .btn { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-danger { background: #ef4444; color: white; }
 
-/* BUTTONS */
-.btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; width: 100%; font-size: 14px; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:active { background: var(--primary-dark); }
-.btn-secondary { background: var(--secondary); color: white; }
-.btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-.btn-danger { background: #ef4444; color: white; }
-.btn-warning { background: #f59e0b; color: white; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* PHOTOS */
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .photo-box { aspect-ratio: 1; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #ddd; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* TIMER AREA */
-.timer-box { background: var(--dark); border-radius: var(--radius); padding: 20px; text-align: center; color: white; }
-.timer-display { font-size: 42px; font-family: monospace; color: var(--primary); font-weight: 700; margin-bottom: 15px; }
-.timer-log { margin-top: 15px; font-size: 12px; text-align: left; max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; }
+        /* MODAL ASSINATURA FULLSCREEN LANDSCAPE-READY */
+        #modalSig { display: none; position: fixed; inset: 0; background: white; z-index: 20000; flex-direction: column; }
+        .sig-header { padding: 15px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .sig-canvas-area { flex: 1; background: #fdfdfd; position: relative; touch-action: none; }
+        #canvasAssinatura { width: 100%; height: 100%; }
+        .sig-footer { padding: 15px; display: flex; gap: 10px; background: #f3f4f6; border-top: 1px solid #ddd; }
 
-/* PHOTOS */
-.photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-.photo-item { aspect-ratio: 1; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #ddd; }
-.photo-item img { width: 100%; height: 100%; object-fit: cover; }
-
-/* SIGNATURE MODAL FULLSCREEN */
-.modal { display: none; position: fixed; inset: 0; background: white; z-index: 10000; flex-direction: column; }
-.modal.open { display: flex; }
-.modal-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
-.canvas-container { flex: 1; position: relative; background: #fff; touch-action: none; }
-#canvasAssinatura { width: 100%; height: 100%; }
-.modal-footer { padding: 20px; display: flex; gap: 10px; border-top: 1px solid #eee; }
-
-/* BOTTOM NAV */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; border-top: 2px solid var(--primary); padding-bottom: env(safe-area-inset-bottom); }
-.nav-item { flex: 1; padding: 12px 5px; text-align: center; color: #9ca3af; background: none; border: none; font-size: 10px; font-weight: 600; }
-.nav-item.active { color: var(--primary); }
-.nav-item i { display: block; font-size: 18px; margin-bottom: 4px; }
-</style>
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; border-top: 3px solid var(--primary); }
+        .nav-item { flex: 1; padding: 12px; color: #9ca3af; text-align: center; border: none; background: none; font-size: 10px; font-weight: 700; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { display: block; font-size: 18px; margin-bottom: 4px; }
+    </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- TELA DE LOGIN -->
 <div id="loginScreen">
-    <div class="login-box">
-        <div class="login-logo"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-        <h2 style="margin-bottom: 5px;">MARLIFT SERVICE</h2>
-        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Sistema de Ordem de Serviço</p>
-        <input type="password" id="senhaAcesso" class="form-control" placeholder="Senha de Acesso" style="text-align: center; margin-bottom: 15px;">
-        <button class="btn btn-primary" onclick="efetuarLogin()">ACESSAR SISTEMA</button>
+    <div class="login-card">
+        <i class="fa-solid fa-screwdriver-wrench" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
+        <h2 style="color: var(--dark); margin-bottom: 5px;">MARLIFT</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 30px;">Identificação do Técnico</p>
+        <input type="password" id="passInput" class="input" style="text-align: center; margin-bottom: 20px;" placeholder="Senha de 6 dígitos">
+        <button class="btn btn-primary" onclick="checkLogin()">ACESSAR SISTEMA</button>
     </div>
 </div>
 
-<div class="app" id="appMain">
+<!-- CONTEÚDO APP -->
+<div id="mainApp" class="app-container">
     <header class="header">
         <div class="header-top">
-            <h1>MARLIFT SERVICE OS</h1>
-            <button class="btn btn-primary" style="width: auto; padding: 5px 12px;" onclick="novaOS()">NOVA OS</button>
+            <h1>MARLIFT OS</h1>
+            <div id="osNumber" class="os-badge">#0000</div>
         </div>
         <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchTab('tab-os', this)">ORDEM SERVIÇO</div>
-            <div class="nav-tab" onclick="switchTab('tab-hist', this)">HISTÓRICO</div>
-            <div class="nav-tab" onclick="switchTab('tab-config', this)">CONFIG</div>
+            <button class="tab-btn active" onclick="openTab('tab-os', this)">ORDEM SERVIÇO</button>
+            <button class="tab-btn" onclick="openTab('tab-hist', this)">HISTÓRICO</button>
+            <button class="tab-btn" onclick="openTab('tab-config', this)">AJUSTES</button>
         </div>
     </header>
 
-    <!-- ABA: ORDEM DE SERVIÇO -->
-    <div id="tab-os" class="tab-content active">
-        <!-- CLIENTE -->
+    <!-- ABA: FORMULÁRIO OS -->
+    <div id="tab-os" class="tab-pane" style="display: block; margin-top: 15px;">
+        <!-- CRONOMETRO -->
+        <div class="timer-box">
+            <div id="displayTimer" class="timer-val">00:00:00</div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button id="btnStart" class="btn btn-primary" onclick="timerStart()"><i class="fa-solid fa-play"></i> INICIAR</button>
+                <button id="btnPause" class="btn btn-secondary" onclick="openPauseModal()" disabled><i class="fa-solid fa-pause"></i> PAUSAR</button>
+            </div>
+            <div id="timerLog" class="timer-log">Aguardando início do atendimento...</div>
+        </div>
+
+        <!-- DADOS CLIENTE -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-user"></i><h3>Dados do Cliente</h3></div>
+            <div class="card-header"><i class="fa-solid fa-user"></i> DADOS DO CLIENTE</div>
             <div class="card-body">
-                <div class="form-group"><label class="form-label">Cliente / Razão Social</label><input type="text" id="cliNome" class="form-control os-field"></div>
-                <div class="form-group"><label class="form-label">Endereço do Atendimento</label><input type="text" id="cliEnd" class="form-control os-field"></div>
-                <div style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex: 1;"><label class="form-label">Marca</label><input type="text" id="eqMarca" class="form-control os-field"></div>
-                    <div class="form-group" style="flex: 1;"><label class="form-label">Modelo</label><input type="text" id="eqModelo" class="form-control os-field"></div>
+                <div class="form-group"><label class="label">Cliente</label><input type="text" id="cliNome" class="input os-input"></div>
+                <div class="form-group"><label class="label">Endereço Atendimento</label><input type="text" id="cliEnd" class="input os-input"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group"><label class="label">Marca</label><input type="text" id="eqMar" class="input os-input"></div>
+                    <div class="form-group"><label class="label">Modelo</label><input type="text" id="eqMod" class="input os-input"></div>
                 </div>
-                <div class="form-group"><label class="form-label">Nº de Série</label><input type="text" id="eqSerie" class="form-control os-field"></div>
+                <div class="form-group"><label class="label">Nº de Série</label><input type="text" id="eqSer" class="input os-input"></div>
             </div>
         </div>
 
-        <!-- CRONÔMETRO -->
+        <!-- RELATÓRIO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-clock"></i><h3>Controle de Tempo</h3></div>
+            <div class="card-header"><i class="fa-solid fa-file-invoice"></i> RELATÓRIO TÉCNICO</div>
             <div class="card-body">
-                <div class="timer-box">
-                    <div id="timerDisplay" class="timer-display">00:00:00</div>
-                    <div style="display: flex; gap: 10px;">
-                        <button id="btnStart" class="btn btn-primary" onclick="startTimer()"><i class="fa-solid fa-play"></i> INICIAR</button>
-                        <button id="btnPause" class="btn btn-warning" onclick="openPauseModal()" disabled><i class="fa-solid fa-pause"></i> PAUSAR</button>
-                    </div>
-                    <div id="timerLog" class="timer-log">Aguardando início...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RELATÓRIO TÉCNICO -->
-        <div class="card">
-            <div class="card-header"><i class="fa-solid fa-file-lines"></i><h3>Relatório de Atendimento</h3></div>
-            <div class="card-body">
-                <div class="form-group"><label class="form-label">Defeito Reclamado</label><input type="text" id="defeito" class="form-control os-field"></div>
-                <div class="form-group"><label class="form-label">Serviço Realizado</label><textarea id="servico" class="form-control os-field" rows="4"></textarea></div>
-                <div class="form-group"><label class="form-label">Peças Utilizadas</label><textarea id="pecas" class="form-control os-field" rows="2"></textarea></div>
+                <div class="form-group"><label class="label">Defeito Reclamado</label><input type="text" id="osDef" class="input os-input"></div>
+                <div class="form-group"><label class="label">Serviço Realizado</label><textarea id="osSrv" class="input os-input" rows="4"></textarea></div>
+                <div class="form-group"><label class="label">Peças / Materiais</label><textarea id="osPec" class="input os-input" rows="2"></textarea></div>
             </div>
         </div>
 
         <!-- FOTOS -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-camera"></i><h3>Evidências Fotográficas</h3></div>
+            <div class="card-header"><i class="fa-solid fa-camera"></i> FOTOS (EVIDÊNCIAS)</div>
             <div class="card-body">
-                <input type="file" id="inputFotos" accept="image/*" capture="environment" multiple style="display:none" onchange="handleFotos(this)">
-                <button class="btn btn-outline os-field" onclick="document.getElementById('inputFotos').click()"><i class="fa-solid fa-camera"></i> TIRAR FOTO / GALERIA</button>
-                <div id="gridFotos" class="photos-grid"></div>
+                <input type="file" id="fInp" accept="image/*" multiple style="display:none" onchange="processFotos(this)">
+                <button class="btn btn-outline os-input" onclick="document.getElementById('fInp').click()"><i class="fa-solid fa-camera"></i> ADICIONAR IMAGENS</button>
+                <div id="fGrid" class="photo-grid"></div>
             </div>
         </div>
 
-        <!-- ENCERRAMENTO -->
+        <!-- FINALIZAÇÃO -->
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-signature"></i><h3>Assinatura & Encerramento</h3></div>
+            <div class="card-header"><i class="fa-solid fa-check-double"></i> FINALIZAÇÃO E ASSINATURA</div>
             <div class="card-body">
-                <div class="form-group"><label class="form-label">Nome do Contato</label><input type="text" id="contatoNome" class="form-control os-field"></div>
-                <div class="form-group"><label class="form-label">Documento (RG/CPF)</label><input type="text" id="contatoDoc" class="form-control os-field"></div>
+                <div class="form-group"><label class="label">Contato (Quem recebeu)</label><input type="text" id="recNome" class="input os-input" placeholder="Nome Completo"></div>
+                <div class="form-group"><label class="label">Documento (RG/CPF)</label><input type="text" id="recDoc" class="input os-input" placeholder="Identidade do recebedor"></div>
                 
-                <div style="margin-bottom: 15px;">
-                    <label class="form-label">Assinatura do Cliente</label>
-                    <div id="sigPreview" style="border: 2px dashed #ccc; border-radius: 8px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden;">
-                        <span style="color: #999; font-size: 12px;">Nenhuma assinatura coletada</span>
-                    </div>
+                <div id="sigPreview" style="width:100%; height:100px; border:2px dashed #ddd; border-radius:10px; margin: 15px 0; display:flex; align-items:center; justify-content:center; background:#fafafa;">
+                    <span style="color:#aaa; font-size:12px;">Assinatura Coletada Aparecerá Aqui</span>
                 </div>
 
-                <button id="btnSig" class="btn btn-warning os-field" onclick="abrirAssinatura()"><i class="fa-solid fa-pen"></i> COLETAR ASSINATURA</button>
+                <button id="btnSig" class="btn btn-warning os-input" onclick="abrirSig()"><i class="fa-solid fa-signature"></i> COLETAR ASSINATURA DO CLIENTE</button>
                 
-                <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                    <button class="btn btn-secondary" onclick="salvarHistorico()"><i class="fa-solid fa-floppy-disk"></i> SALVAR NO HISTÓRICO</button>
-                    <button id="btnPDF" class="btn btn-primary" onclick="gerarPDF()" disabled><i class="fa-solid fa-file-pdf"></i> GERAR PDF PARA DOWNLOAD</button>
+                <div style="margin-top: 20px; display:grid; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="salvarLocal()"><i class="fa-solid fa-floppy-disk"></i> SALVAR NO HISTÓRICO</button>
+                    <button id="btnPdf" class="btn btn-primary" onclick="gerarPDF()" disabled><i class="fa-solid fa-file-pdf"></i> GERAR PDF E FINALIZAR</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ABA: HISTÓRICO -->
-    <div id="tab-hist" class="tab-content">
-        <div id="listaHistorico"></div>
+    <div id="tab-hist" class="tab-pane" style="display:none; margin-top: 15px;">
+        <div id="listaHist"></div>
     </div>
 
-    <!-- ABA: CONFIG -->
-    <div id="tab-config" class="tab-content">
+    <!-- ABA: AJUSTES -->
+    <div id="tab-config" class="tab-pane" style="display:none; margin-top: 15px;">
         <div class="card">
-            <div class="card-header"><i class="fa-solid fa-gear"></i><h3>Configurações do Sistema</h3></div>
+            <div class="card-header"><i class="fa-solid fa-cog"></i> CONFIGURAÇÕES DE SINCRONIZAÇÃO</div>
             <div class="card-body">
-                <div class="form-group"><label class="form-label">Nome da Empresa</label><input type="text" id="cfgEmpresa" class="form-control" value="MARLIFT SERVICE"></div>
-                <div class="form-group"><label class="form-label">URL Planilha Google</label><input type="url" id="cfgSheetUrl" class="form-control" placeholder="https://script.google.com/..."></div>
-                <hr style="margin: 20px 0;">
-                <button class="btn btn-danger" onclick="limparTodosDados()"><i class="fa-solid fa-trash"></i> APAGAR TUDO</button>
-                <button class="btn btn-secondary" style="margin-top: 10px;" onclick="logout()">SAIR DO SISTEMA</button>
+                <div class="form-group">
+                    <label class="label">Google Apps Script URL</label>
+                    <input type="text" id="cfgUrl" class="input" placeholder="https://script.google.com/macros/s/...">
+                </div>
+                <div class="form-group">
+                    <label class="label">Próximo Número da OS</label>
+                    <input type="number" id="cfgProxOS" class="input" value="1" onchange="atualizarNumOS()">
+                </div>
+                <button class="btn btn-outline" style="margin-bottom:10px" onclick="copiarScript()">COPIAR CÓDIGO DA PLANILHA</button>
+                <hr style="margin:20px 0;">
+                <button class="btn btn-danger" onclick="limparTudo()">REDEFINIR TODO O SISTEMA</button>
             </div>
         </div>
     </div>
-
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('tab-os', this)"><i class="fa-solid fa-file-invoice"></i>NOVA OS</button>
-        <button class="nav-item" onclick="switchTab('tab-hist', this)"><i class="fa-solid fa-history"></i>HISTÓRICO</button>
-        <button class="nav-item" onclick="switchTab('tab-config', this)"><i class="fa-solid fa-cog"></i>CONFIG</button>
-    </nav>
 </div>
 
-<!-- MODAL ASSINATURA -->
-<div id="modalSig" class="modal">
-    <div class="modal-header">
-        <h3>ASSINATURA DO CLIENTE</h3>
-        <button onclick="fecharAssinatura()" style="background:none; border:none; color:white; font-size:30px;">&times;</button>
+<!-- MODAL ASSINATURA (MODO PAISAGEM REFORÇADO) -->
+<div id="modalSig">
+    <div class="sig-header">
+        <h3>ASSINATURA DIGITAL (USE O CELULAR DEITADO)</h3>
+        <button onclick="fecharSig()" style="background:none; border:none; color:white; font-size:30px;">&times;</button>
     </div>
-    <div class="canvas-container">
+    <div class="sig-canvas-area">
         <canvas id="canvasAssinatura"></canvas>
     </div>
-    <div class="modal-footer">
+    <div class="sig-footer">
         <button class="btn btn-outline" onclick="limparCanvas()">LIMPAR</button>
-        <button class="btn btn-primary" onclick="confirmarAssinatura()">CONFIRMAR E FINALIZAR OS</button>
+        <button class="btn btn-primary" onclick="salvarSig()">SALVAR ASSINATURA</button>
     </div>
 </div>
 
-<!-- MODAL PAUSA -->
-<div id="modalPause" class="modal" style="background: rgba(0,0,0,0.8); justify-content: center; align-items: center;">
-    <div class="card" style="width: 90%; max-width: 350px;">
-        <div class="card-header"><h3>MOTIVO DA PAUSA</h3></div>
+<!-- MODAL MOTIVO PAUSA -->
+<div id="modalPause" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:30000; align-items:center; justify-content:center; padding:20px;">
+    <div class="card" style="width:100%; max-width:320px;">
+        <div class="card-header">MOTIVO DA PAUSA</div>
         <div class="card-body">
-            <select id="motivoPausa" class="form-control" style="margin-bottom: 15px;">
-                <option value="Almoço">Intervalo Almoço</option>
-                <option value="Aguardando Peça">Aguardando Peça</option>
-                <option value="Aguardando Liberar Máquina">Liberação do Equipamento</option>
-                <option value="Aguardando Aprovação">Aguardando Aprovação</option>
+            <select id="pMotivo" class="input" style="margin-bottom:15px;">
+                <option>Almoço</option>
+                <option>Aguardando Peça</option>
+                <option>Aguardando Liberar Equipamento</option>
+                <option>Aguardando Aprovação</option>
             </select>
-            <button class="btn btn-warning" onclick="confirmarPausa()">PAUSAR AGORA</button>
-            <button class="btn btn-outline" style="margin-top: 10px;" onclick="document.getElementById('modalPause').classList.remove('open')">CANCELAR</button>
+            <button class="btn btn-primary" onclick="confirmPause()">CONFIRMAR PAUSA</button>
+            <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('modalPause').style.display='none'">CANCELAR</button>
         </div>
     </div>
 </div>
 
 <script>
-// --- VARIÁVEIS GLOBAIS ---
-let timerInterval, timerSecs = 0, timerStatus = 'parado', timerLog = [];
-let fotosArray = [], assinaturaData = null;
-let canvas, ctx, desenhando = false;
+// --- ESTADO GLOBAL ---
+let timerInterval, seconds = 0, status = 'parado', logs = [], photos = [], sigImg = null;
+let osNum = parseInt(localStorage.getItem('ml_os_num')) || 1;
 
 // --- LOGIN ---
-function efetuarLogin() {
-    const senha = document.getElementById('senhaAcesso').value;
-    if(senha === '123') { // Senha padrão
+const passInput = document.getElementById('passInput');
+passInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') checkLogin(); });
+
+function checkLogin() {
+    const pass = passInput.value;
+    if(pass.length >= 6 && pass === '123456') { // ALTERE A SENHA AQUI
         document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appMain').style.display = 'block';
-        localStorage.setItem('marlift_auth', 'true');
-    } else { alert('Senha inválida!'); }
+        document.getElementById('mainApp').style.display = 'block';
+        localStorage.setItem('ml_auth', 'ok');
+        atualizarNumOS();
+    } else {
+        alert('Senha deve ter no mínimo 6 dígitos e ser válida.');
+    }
 }
-
-if(localStorage.getItem('marlift_auth') === 'true') {
+if(localStorage.getItem('ml_auth')) { 
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appMain').style.display = 'block';
+    document.getElementById('mainApp').style.display = 'block';
+    atualizarNumOS();
 }
 
-function logout() { localStorage.removeItem('marlift_auth'); location.reload(); }
-
-// --- NAVEGAÇÃO ---
-function switchTab(tabId, el) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.nav-tab, .nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-    if(tabId === 'tab-hist') renderHistorico();
+// --- TABS ---
+function openTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if(id === 'tab-hist') renderHist();
 }
 
 // --- CRONÔMETRO ---
-function formatTime(s) {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return [h, m, sec].map(v => v.toString().padStart(2, '0')).join(':');
-}
-
-function startTimer() {
-    if(timerStatus === 'rodando') return;
-    timerStatus = 'rodando';
+function timerStart() {
+    if(status === 'rodando') return;
+    status = 'rodando';
     document.getElementById('btnStart').disabled = true;
     document.getElementById('btnPause').disabled = false;
-    timerLog.push(`Início: ${new Date().toLocaleTimeString()}`);
+    logs.push("Início: " + new Date().toLocaleTimeString());
     updateTimerLog();
     timerInterval = setInterval(() => {
-        timerSecs++;
-        document.getElementById('timerDisplay').innerText = formatTime(timerSecs);
+        seconds++;
+        document.getElementById('displayTimer').innerText = new Date(seconds * 1000).toISOString().substr(11, 8);
     }, 1000);
 }
 
-function openPauseModal() { document.getElementById('modalPause').classList.add('open'); }
+function openPauseModal() { document.getElementById('modalPause').style.display = 'flex'; }
 
-function confirmarPausa() {
+function confirmPause() {
     clearInterval(timerInterval);
-    timerStatus = 'pausado';
-    const motivo = document.getElementById('motivoPausa').value;
-    timerLog.push(`Pausa (${motivo}): ${new Date().toLocaleTimeString()}`);
+    status = 'pausado';
+    const m = document.getElementById('pMotivo').value;
+    logs.push(`Pausa (${m}): ` + new Date().toLocaleTimeString());
     updateTimerLog();
     document.getElementById('btnStart').disabled = false;
-    document.getElementById('btnStart').innerHTML = '<i class="fa-solid fa-play"></i> RETOMAR';
+    document.getElementById('btnStart').innerText = "RETOMAR";
     document.getElementById('btnPause').disabled = true;
-    document.getElementById('modalPause').classList.remove('open');
+    document.getElementById('modalPause').style.display = 'none';
 }
 
-function stopTimer() {
+function updateTimerLog() { document.getElementById('timerLog').innerHTML = logs.join('<br>'); }
+
+// --- ASSINATURA ---
+let canvas = document.getElementById('canvasAssinatura');
+let ctx = canvas.getContext('2d');
+let drawing = false;
+
+function abrirSig() {
+    document.getElementById('modalSig').style.display = 'flex';
+    // Ajustar canvas para o tamanho da div
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#000";
+}
+
+function fecharSig() { document.getElementById('modalSig').style.display = 'none'; }
+
+function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+}
+
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('touchmove', (e) => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
+canvas.addEventListener('touchend', () => drawing = false);
+
+function limparCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); }
+
+function salvarSig() {
+    sigImg = canvas.toDataURL();
+    document.getElementById('previewSig').innerHTML = `<img src="${sigImg}" style="height:100%">`;
     clearInterval(timerInterval);
-    timerStatus = 'finalizado';
-    timerLog.push(`Fim: ${new Date().toLocaleTimeString()} | Total: ${formatTime(timerSecs)}`);
+    logs.push("Finalizado: " + new Date().toLocaleTimeString());
     updateTimerLog();
+    lockOS(true);
+    fecharSig();
 }
 
-function updateTimerLog() {
-    document.getElementById('timerLog').innerHTML = timerLog.join('<br>');
+function lockOS(lock) {
+    document.querySelectorAll('.os-input').forEach(i => i.disabled = lock);
+    document.getElementById('btnPdf').disabled = !lock;
+    document.getElementById('btnStart').disabled = lock;
 }
 
 // --- FOTOS ---
-function handleFotos(input) {
+function processFotos(input) {
     Array.from(input.files).forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
-            fotosArray.push(e.target.result);
-            renderFotos();
+            photos.push(e.target.result);
+            renderPhotos();
         };
         reader.readAsDataURL(file);
     });
 }
-
-function renderFotos() {
-    const grid = document.getElementById('gridFotos');
-    grid.innerHTML = fotosArray.map((src, i) => `
-        <div class="photo-item">
-            <img src="${src}">
-            <button onclick="removerFoto(${i})" style="position:absolute; top:0; right:0; background:red; color:white; border:none; padding:2px 5px;">&times;</button>
-        </div>
-    `).join('');
-}
-function removerFoto(i) { fotosArray.splice(i, 1); renderFotos(); }
-
-// --- ASSINATURA ---
-function abrirAssinatura() {
-    document.getElementById('modalSig').classList.add('open');
-    initCanvas();
+function renderPhotos() {
+    const g = document.getElementById('fGrid');
+    g.innerHTML = photos.map((p, i) => `<div class="photo-box"><img src="${p}"><button onclick="photos.splice(${i},1);renderPhotos()" style="position:absolute;top:0;right:0;background:red;color:white;border:none;padding:2px 5px;">&times;</button></div>`).join('');
 }
 
-function fecharAssinatura() { document.getElementById('modalSig').classList.remove('open'); }
-
-function initCanvas() {
-    canvas = document.getElementById('canvasAssinatura');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#000';
-
-    ['mousedown', 'touchstart'].forEach(e => canvas.addEventListener(e, startDraw));
-    ['mousemove', 'touchmove'].forEach(e => canvas.addEventListener(e, draw));
-    ['mouseup', 'touchend'].forEach(e => canvas.addEventListener(e, endDraw));
+// --- CONFIG & NUMERO OS ---
+function atualizarNumOS() {
+    osNum = parseInt(document.getElementById('cfgProxOS').value) || osNum;
+    localStorage.setItem('ml_os_num', osNum);
+    document.getElementById('osNumber').innerText = "#" + osNum.toString().padStart(4, '0');
 }
 
-function startDraw(e) { 
-    desenhando = true; 
-    const pos = getPos(e);
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-}
-
-function draw(e) {
-    if(!desenhando) return;
-    const pos = getPos(e);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-}
-
-function endDraw() { desenhando = false; }
-
-function getPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top };
-}
-
-function limparCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-function confirmarAssinatura() {
-    assinaturaData = canvas.toDataURL();
-    document.getElementById('sigPreview').innerHTML = `<img src="${assinaturaData}" style="height:100%">`;
-    stopTimer();
-    lockForm(true);
-    fecharAssinatura();
-}
-
-function lockForm(lock) {
-    const fields = document.querySelectorAll('.os-field');
-    fields.forEach(f => f.disabled = lock);
-    document.getElementById('btnPDF').disabled = !lock;
-    document.getElementById('btnStart').disabled = lock;
-}
-
-// --- HISTÓRICO ---
-function salvarHistorico() {
-    const os = {
-        id: Date.now(),
+// --- HISTÓRICO E SALVAMENTO ---
+function salvarLocal() {
+    const osData = {
+        num: osNum,
         cliente: document.getElementById('cliNome').value,
         data: new Date().toLocaleString(),
-        timer: formatTime(timerSecs),
-        dados: {
-            cliEnd: document.getElementById('cliEnd').value,
-            marca: document.getElementById('eqMarca').value,
-            modelo: document.getElementById('eqModelo').value,
-            serie: document.getElementById('eqSerie').value,
-            defeito: document.getElementById('defeito').value,
-            servico: document.getElementById('servico').value,
-            pecas: document.getElementById('pecas').value,
-            contato: document.getElementById('contatoNome').value,
-            documento: document.getElementById('contatoDoc').value,
-            timerSecs: timerSecs,
-            timerLog: timerLog,
-            fotos: fotosArray,
-            assinatura: assinaturaData
+        tempo: new Date(seconds * 1000).toISOString().substr(11, 8),
+        assinatura: sigImg,
+        campos: {
+            end: document.getElementById('cliEnd').value,
+            mar: document.getElementById('eqMar').value,
+            mod: document.getElementById('eqMod').value,
+            ser: document.getElementById('eqSer').value,
+            def: document.getElementById('osDef').value,
+            srv: document.getElementById('osSrv').value,
+            pec: document.getElementById('osPec').value,
+            rec: document.getElementById('recNome').value,
+            doc: document.getElementById('recDoc').value
         }
     };
-    let hist = JSON.parse(localStorage.getItem('marlift_hist') || '[]');
-    hist.unshift(os);
-    localStorage.setItem('marlift_hist', JSON.stringify(hist));
-    alert('OS Salva com sucesso!');
+    let h = JSON.parse(localStorage.getItem('ml_hist') || '[]');
+    h.unshift(osData);
+    localStorage.setItem('ml_hist', JSON.stringify(h));
+    
+    // Incrementar número
+    osNum++;
+    document.getElementById('cfgProxOS').value = osNum;
+    atualizarNumOS();
+    
+    syncGoogle(osData);
+    alert('OS Salva no histórico local!');
 }
 
-function renderHistorico() {
-    const hist = JSON.parse(localStorage.getItem('marlift_hist') || '[]');
-    const container = document.getElementById('listaHistorico');
-    if(!hist.length) { container.innerHTML = '<p style="text-align:center; padding:20px;">Vazio</p>'; return; }
-    
-    container.innerHTML = hist.map(os => `
-        <div class="card" style="padding:15px; margin:10px;">
-            <div style="font-size:12px; font-weight:bold; color:var(--primary)">#${os.id} - ${os.data}</div>
-            <div style="font-size:16px; font-weight:bold;">${os.cliente}</div>
-            <div style="font-size:12px;">Tempo: ${os.timer}</div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-outline" style="padding:5px" onclick="resgatarOS(${os.id})">EDITAR/RESGATAR</button>
-                <button class="btn btn-danger" style="padding:5px; width:40px;" onclick="excluirOS(${os.id})"><i class="fa-solid fa-trash"></i></button>
-            </div>
+async function syncGoogle(data) {
+    const url = document.getElementById('cfgUrl').value;
+    if(!url) return;
+    try {
+        await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data)
+        });
+    } catch (e) { console.error('Erro sincronia', e); }
+}
+
+function renderHist() {
+    const h = JSON.parse(localStorage.getItem('ml_hist') || '[]');
+    document.getElementById('listaHist').innerHTML = h.map(o => `
+        <div class="card" style="padding:15px; margin-bottom:10px;">
+            <div style="font-weight:bold; color:var(--primary)">OS #${o.num.toString().padStart(4,'0')}</div>
+            <div>${o.cliente}</div>
+            <div style="font-size:11px; color:#666">${o.data} | Tempo: ${o.tempo}</div>
         </div>
     `).join('');
-}
-
-function resgatarOS(id) {
-    const hist = JSON.parse(localStorage.getItem('marlift_hist') || '[]');
-    const os = hist.find(o => o.id === id);
-    if(!os) return;
-
-    document.getElementById('cliNome').value = os.cliente;
-    document.getElementById('cliEnd').value = os.dados.cliEnd;
-    document.getElementById('eqMarca').value = os.dados.marca;
-    document.getElementById('eqModelo').value = os.dados.modelo;
-    document.getElementById('eqSerie').value = os.dados.serie;
-    document.getElementById('defeito').value = os.dados.defeito;
-    document.getElementById('servico').value = os.dados.servico;
-    document.getElementById('pecas').value = os.dados.pecas;
-    document.getElementById('contatoNome').value = os.dados.contato;
-    document.getElementById('contatoDoc').value = os.dados.documento;
-    
-    timerSecs = os.dados.timerSecs;
-    timerLog = os.dados.timerLog;
-    document.getElementById('timerDisplay').innerText = formatTime(timerSecs);
-    updateTimerLog();
-
-    fotosArray = os.dados.fotos;
-    renderFotos();
-
-    assinaturaData = os.dados.assinatura;
-    if(assinaturaData) {
-        document.getElementById('sigPreview').innerHTML = `<img src="${assinaturaData}" style="height:100%">`;
-        lockForm(true);
-    } else {
-        lockForm(false);
-    }
-    switchTab('tab-os', document.querySelector('.nav-tab'));
-}
-
-function excluirOS(id) {
-    if(!confirm('Excluir OS permanentemente?')) return;
-    let hist = JSON.parse(localStorage.getItem('marlift_hist') || '[]');
-    hist = hist.filter(o => o.id !== id);
-    localStorage.setItem('marlift_hist', JSON.stringify(hist));
-    renderHistorico();
-}
-
-function novaOS() {
-    if(confirm('Deseja iniciar uma nova OS? Os dados não salvos serão perdidos.')) {
-        location.reload();
-    }
-}
-
-function limparTodosDados() {
-    if(confirm('Isso apagará TODO o histórico e configurações. Tem certeza?')) {
-        localStorage.clear();
-        location.reload();
-    }
 }
 
 // --- PDF ---
 function gerarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const empresa = document.getElementById('cfgEmpresa').value;
-
+    const numStr = "#" + osNum.toString().padStart(4, '0');
+    
     doc.setFillColor(31, 41, 55);
     doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255, 102, 0);
     doc.setFontSize(22);
-    doc.text(empresa, 105, 20, { align: 'center' });
+    doc.text("MARLIFT SERVICE", 105, 20, { align: 'center' });
 
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(0,0,0);
+    doc.setFontSize(14);
+    doc.text(`ORDEM DE SERVIÇO: ${numStr}`, 15, 45);
     doc.setFontSize(10);
-    doc.text(`Ordem de Serviço gerada em: ${new Date().toLocaleString()}`, 15, 40);
+    doc.text(`Data: ${new Date().toLocaleString()}`, 15, 52);
     
-    doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text("DADOS DO CLIENTE", 15, 50);
+    doc.text("CLIENTE:", 15, 65);
     doc.setFont(undefined, 'normal');
-    doc.text(`Cliente: ${document.getElementById('cliNome').value}`, 15, 57);
-    doc.text(`Endereço: ${document.getElementById('cliEnd').value}`, 15, 64);
-    doc.text(`Equipamento: ${document.getElementById('eqMarca').value} ${document.getElementById('eqModelo').value} (S/N: ${document.getElementById('eqSerie').value})`, 15, 71);
+    doc.text(document.getElementById('cliNome').value, 15, 70);
+    doc.text(document.getElementById('cliEnd').value, 15, 75);
 
     doc.setFont(undefined, 'bold');
-    doc.text("RELATÓRIO TÉCNICO", 15, 85);
+    doc.text("EQUIPAMENTO:", 15, 85);
     doc.setFont(undefined, 'normal');
-    doc.text(`Tempo Total: ${formatTime(timerSecs)}`, 15, 92);
-    doc.text(`Defeito: ${document.getElementById('defeito').value}`, 15, 99);
+    doc.text(`${document.getElementById('eqMar').value} ${document.getElementById('eqMod').value} | S/N: ${document.getElementById('eqSer').value}`, 15, 90);
+
+    doc.setFont(undefined, 'bold');
+    doc.text("RESUMO TÉCNICO:", 15, 105);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Tempo de Atendimento: ${new Date(seconds * 1000).toISOString().substr(11, 8)}`, 15, 110);
     
-    const srv = doc.splitTextToSize(`Serviço: ${document.getElementById('servico').value}`, 180);
-    doc.text(srv, 15, 106);
+    const srv = doc.splitTextToSize(`Serviço: ${document.getElementById('osSrv').value}`, 180);
+    doc.text(srv, 15, 117);
 
-    let yPos = 130;
-    doc.setFont(undefined, 'bold');
-    doc.text("ENCERRAMENTO", 15, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text(`Recebido por: ${document.getElementById('contatoNome').value}`, 15, yPos + 7);
-    doc.text(`Documento: ${document.getElementById('contatoDoc').value}`, 15, yPos + 14);
-
-    if(assinaturaData) {
-        doc.addImage(assinaturaData, 'PNG', 15, yPos + 20, 50, 20);
+    if(sigImg) {
+        doc.text("Assinatura do Cliente:", 15, 180);
+        doc.addImage(sigImg, 'PNG', 15, 185, 60, 25);
+        doc.text(`Recebido por: ${document.getElementById('recNome').value}`, 15, 215);
     }
 
-    doc.save(`OS_MARLIFT_${Date.now()}.pdf`);
+    doc.save(`OS_MARLIFT_${numStr}.pdf`);
 }
+
+function copiarScript() {
+    const sc = `function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheets()[0];
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([data.num, data.data, data.cliente, data.tempo, data.campos.srv]);
+  return ContentService.createTextOutput("OK");
+}`;
+    navigator.clipboard.writeText(sc);
+    alert('Código do Google Apps Script copiado!');
+}
+
+function limparTudo() { if(confirm("Apagar todos os dados?")) { localStorage.clear(); location.reload(); } }
 </script>
 
 </body>
