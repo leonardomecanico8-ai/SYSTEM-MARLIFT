@@ -14,24 +14,6 @@
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
-<div id="loginScreen">
-  <div class="login-bg-circles"><span></span><span></span></div>
-  <div class="login-card">
-    <div class="login-logo-wrap">
-      <div class="login-logo-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
-      <div class="login-brand"><span>MARLIFT</span> SERVICE</div>
-      <div class="login-sub">Sistema de Ordem de Serviço</div>
-    </div>
-    <div id="loginError" class="login-error"><i class="fa-solid fa-circle-exclamation"></i> Senha incorreta. Tente novamente.</div>
-    <label class="login-label">Senha de Acesso</label>
-    <div class="pin-wrap">
-      <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
-    </div>
-    <button class="btn-login" onclick="fazerLogin()"><i class="fa-solid fa-right-to-bracket"></i> ENTRAR NO SISTEMA</button>
-    <div class="login-hint">Senha padrão: 123456</div>
-  </div>
-</div>
 
 <!-- ===== APP ===== -->
 <div class="app" id="mainApp">
