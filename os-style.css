@@ -28,33 +28,6 @@
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { font-family: var(--font); background: var(--gray-light); color: var(--dark); line-height: 1.6; min-height: 100vh; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
 
-/* ── LOGIN ── */
-#loginScreen { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); overflow: hidden; }
-.login-bg-circles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.login-bg-circles span { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(29,78,216,0.18) 0%, transparent 70%); }
-.login-bg-circles span:nth-child(1) { width: 500px; height: 500px; top: -150px; left: -100px; }
-.login-bg-circles span:nth-child(2) { width: 350px; height: 350px; bottom: -100px; right: -80px; background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%); }
-.login-card { position: relative; z-index: 1; width: 100%; max-width: 380px; margin: 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 44px 36px 36px; backdrop-filter: blur(20px); box-shadow: 0 32px 80px rgba(0,0,0,0.5); }
-.login-logo-wrap { text-align: center; margin-bottom: 32px; }
-.login-logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%); box-shadow: 0 8px 32px rgba(29,78,216,0.45); margin-bottom: 16px; }
-.login-logo-icon i { font-size: 32px; color: white; }
-.login-brand { font-size: 22px; font-weight: 900; letter-spacing: 2px; color: white; }
-.login-brand span { color: var(--accent); }
-.login-sub { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-.login-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
-.pin-wrap { position: relative; margin-bottom: 16px; }
-.pin-input { width: 100%; height: 58px; background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.12); border-radius: 12px; color: white; font-size: 28px; text-align: center; letter-spacing: 12px; font-weight: 800; outline: none; transition: all 0.2s; -moz-appearance: textfield; }
-.pin-input::-webkit-outer-spin-button, .pin-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-.pin-input:focus { border-color: var(--primary-mid); background: rgba(29,78,216,0.15); box-shadow: 0 0 0 4px rgba(29,78,216,0.2); }
-.btn-login { width: 100%; height: 52px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%); border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 800; cursor: pointer; letter-spacing: 1px; box-shadow: 0 8px 24px rgba(29,78,216,0.4); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-login:active { transform: scale(0.98); }
-.login-hint { text-align: center; margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.25); }
-.login-error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #fca5a5; display: none; margin-bottom: 14px; text-align: center; }
-.login-error.vis { display: block; }
-
-/* ── APP ── */
-.app { max-width: 640px; margin: 0 auto; padding-bottom: 80px; display: none; }
-.app.visible { display: block; }
 
 /* ── HEADER ── */
 .header { background: var(--dark); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-lg); }
