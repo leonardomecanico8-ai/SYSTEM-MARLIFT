@@ -6,27 +6,6 @@ let assinatura = null, assinaturaBase64 = null;
 let timerInt = null, timerSeg = 0, timerStatus = 'parado', tLog = [];
 let sigCtx = null, sigDrawing = false;
 let cfg = {}, isLocked = false;
-const SENHA = "123456";
-
-/* ── LOGIN ── */
-function fazerLogin() {
-  const pin = document.getElementById('pinInput').value;
-  const err = document.getElementById('loginError');
-  if (pin === SENHA) {
-    sessionStorage.setItem('logado', '1');
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').classList.add('visible');
-    toast('Bem-vindo ao Marlift Service!', 'success');
-  } else {
-    err.classList.add('vis');
-    document.getElementById('pinInput').value = '';
-    setTimeout(() => err.classList.remove('vis'), 3000);
-  }
-}
-function fazerLogout() {
-  if (!confirm('Deseja sair do sistema?')) return;
-  sessionStorage.removeItem('logado'); location.reload();
-}
 
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded', () => {
