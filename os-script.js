@@ -2,7 +2,7 @@
    MARLIFT SERVICE — OS SCRIPT v3.0
    ============================================================= */
 let clientes = [], fotos = [], horFoto = null;
-let assinatura = null, assinaturaMARLIFT = null;
+let assinatura = null, assinaturaBase44 = null;
 let timerInt = null, timerSeg = 0, timerStatus = 'parado', tLog = [];
 let sigCtx = null, sigDrawing = false;
 let cfg = {}, isLocked = false;
