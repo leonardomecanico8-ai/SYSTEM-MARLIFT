@@ -1,0 +1,421 @@
+!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f172a">
+<title>MARLIFT SERVICE — Sistema OS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="os-style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-bg-circles"><span></span><span></span></div>
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <div class="login-logo-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+      <div class="login-brand"><span>MARLIFT</span> SERVICE</div>
+      <div class="login-sub">Sistema de Ordem de Serviço</div>
+    </div>
+    <div id="loginError" class="login-error"><i class="fa-solid fa-circle-exclamation"></i> Senha incorreta. Tente novamente.</div>
+    <label class="login-label">Senha de Acesso</label>
+    <div class="pin-wrap">
+      <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <button class="btn-login" onclick="fazerLogin()"><i class="fa-solid fa-right-to-bracket"></i> ENTRAR NO SISTEMA</button>
+    <div class="login-hint">Senha padrão: 123456</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div class="app" id="mainApp">
+
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-wrench"></i></div>
+        <div class="logo-text">
+          <h1><span>MARLIFT</span> SERVICE</h1>
+          <small>Manutenção de Empilhadeiras</small>
+        </div>
+      </div>
+      <button class="btn-header" onclick="novaOS()"><i class="fa-solid fa-plus"></i> Nova OS</button>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" data-tab="tab-os"   onclick="switchTab('tab-os')"><i class="fa-solid fa-file-pen"></i> Nova OS</div>
+      <div class="nav-tab"        data-tab="tab-dash"  onclick="switchTab('tab-dash')"><i class="fa-solid fa-gauge-high"></i> Dashboard</div>
+      <div class="nav-tab"        data-tab="tab-hist"  onclick="switchTab('tab-hist')"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</div>
+      <div class="nav-tab"        data-tab="tab-cfg"   onclick="switchTab('tab-cfg')"><i class="fa-solid fa-gear"></i> Config</div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-steps">
+        <div class="prog-step active" id="ps1"></div>
+        <div class="prog-step" id="ps2"></div>
+        <div class="prog-step" id="ps3"></div>
+        <div class="prog-step" id="ps4"></div>
+        <div class="prog-step" id="ps5"></div>
+        <div class="prog-step" id="ps6"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== NOVA OS ========== -->
+  <div id="tab-os" class="tab-content active">
+    <div class="os-num-box">
+      <div><div class="os-num-label">Ordem de Serviço</div><div class="os-num-value" id="osNum">#000001</div></div>
+      <div><div class="os-num-date" id="osData">—</div><div class="os-num-date" id="osHora">—</div></div>
+    </div>
+
+    <!-- CLIENTE -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-building-user"></i></div><div><div class="card-title">Dados do Cliente</div><div class="card-subtitle">Seção 1 de 6</div></div></div>
+      <div class="card-body">
+        <div class="box-highlight">
+          <label class="form-label"><i class="fa-solid fa-magnifying-glass"></i> Buscar Cliente Cadastrado</label>
+          <div class="d-flex gap-2">
+            <select id="selCliente" class="form-control" style="flex:1" onchange="carregarCliente(this.value)">
+              <option value="">— Selecione ou preencha abaixo —</option>
+            </select>
+            <button class="btn btn-primary btn-icon" onclick="abrirModal('modalCli')"><i class="fa-solid fa-user-plus"></i></button>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Razão Social / Nome <span class="required">*</span></label><input type="text" id="cNome" class="form-control" placeholder="Ex: Empresa ABC Ltda" autocomplete="organization" oninput="autoSave();prog()"></div>
+        <div class="form-group"><label class="form-label">CNPJ / CPF</label><input type="text" id="cCnpj" class="form-control" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)"></div>
+        <div class="form-group">
+          <label class="form-label">Endereço Completo <span class="required">*</span></label>
+          <input type="text" id="cEnd" class="form-control" placeholder="Rua, Nº, Bairro, Cidade - UF" oninput="autoSave()">
+          <button class="btn btn-ghost mt-2" onclick="abrirGps()" style="font-size:12.5px;padding:8px 13px"><i class="fa-solid fa-location-dot" style="color:var(--primary)"></i> Abrir no Google Maps</button>
+        </div>
+        <div class="row">
+          <div class="form-group"><label class="form-label">Contato</label><input type="text" id="cContato" class="form-control" placeholder="Nome do responsável" oninput="autoSave()"></div>
+          <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input type="tel" id="cTel" class="form-control" inputmode="tel" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" oninput="mascaraTel(this)"></div>
+        </div>
+        <div class="form-group"><label class="form-label">E-mail</label><input type="email" id="cEmail" class="form-control" placeholder="contato@empresa.com" inputmode="email" oninput="autoSave()"></div>
+      </div>
+    </div>
+
+    <!-- TÉCNICO -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-hard-hat"></i></div><div><div class="card-title">Técnico Responsável</div><div class="card-subtitle">Seção 2 de 6</div></div></div>
+      <div class="card-body">
+        <div class="form-group"><label class="form-label">Nome do Técnico <span class="required">*</span></label><input type="text" id="tNome" class="form-control" placeholder="Ex: Carlos Silva" autocomplete="name" oninput="autoSave();prog()"></div>
+      </div>
+    </div>
+
+    <!-- EQUIPAMENTO -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-truck-ramp-box"></i></div><div><div class="card-title">Dados do Equipamento</div><div class="card-subtitle">Seção 3 de 6</div></div></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="form-group">
+            <label class="form-label">Marca</label>
+            <select id="eMarca" class="form-control" onchange="autoSave();prog()">
+              <option value="">Selecione...</option>
+              <option>TOYOTA</option><option>CLARK</option><option>HYSTER</option><option>YALE</option>
+              <option>STILL</option><option>HANGCHA</option><option>NISSAN</option><option>KOMATSU</option>
+              <option>MITSUBISHI</option><option>GOODSENSE</option><option>HELI</option><option>PALETRANS</option><option>OUTRA</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Modelo</label><input type="text" id="eModelo" class="form-control" placeholder="Ex: CPY25" oninput="autoSave()"></div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label class="form-label">Combustível</label>
+            <select id="eComb" class="form-control" onchange="autoSave()">
+              <option value="">Selecione...</option><option>GLP</option><option>ELÉTRICA</option><option>DIESEL</option><option>GASOLINA</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Nº de Série</label><input type="text" id="eSerie" class="form-control" placeholder="Ex: E356-0023" oninput="autoSave()"></div>
+        </div>
+        <div class="form-group"><label class="form-label"><i class="fa-solid fa-gauge-high"></i> Horímetro (horas)</label><input type="text" id="eHor" class="form-control" inputmode="numeric" maxlength="5" placeholder="00000" oninput="this.value=this.value.replace(/\D/g,'').substring(0,5);autoSave()"></div>
+        <div class="form-group">
+          <label class="form-label"><i class="fa-solid fa-camera"></i> Foto do Horímetro</label>
+          <div class="horimetro-wrap">
+            <img id="horPrev" class="horimetro-preview" src="" alt="" onclick="abrirLightbox(this.src)">
+            <input type="file" id="inputHor" accept="image/*" capture="environment" style="display:none" onchange="processarFotoHor(this)">
+            <button class="btn btn-outline" id="btnFotHor" onclick="document.getElementById('inputHor').click()"><i class="fa-solid fa-camera-retro"></i> Fotografar Horímetro</button>
+            <button class="btn btn-danger" id="btnRmHor" style="display:none" onclick="removerFotoHor()"><i class="fa-solid fa-trash"></i> Remover</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRIAGEM -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="card-title">Triagem do Chamado</div><div class="card-subtitle">Seção 4 de 6</div></div></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="form-group">
+            <label class="form-label">Tipo do Chamado <span class="required">*</span></label>
+            <select id="tipo" class="form-control" onchange="autoSave();prog()">
+              <option value="">Selecione...</option>
+              <option value="Emergencial">🚨 Emergencial</option>
+              <option value="Corretivo">🔧 Corretivo</option>
+              <option value="Preventivo">✅ Preventivo</option>
+              <option value="Garantia">🛡️ Garantia</option>
+              <option value="Orçamento">💰 Orçamento</option>
+              <option value="Instalação">🔩 Instalação</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prioridade</label>
+            <select id="prior" class="form-control" onchange="autoSave()"><option>Normal</option><option>Alta</option><option>Urgente</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Defeito / Reclamação <span class="required">*</span></label><input type="text" id="defeito" class="form-control" placeholder="Ex: Motor superaquecendo ao carregar" oninput="autoSave()"></div>
+      </div>
+    </div>
+
+    <!-- CRONÔMETRO -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-stopwatch"></i></div><div><div class="card-title">Tempo de Atendimento</div><div class="card-subtitle">Seção 5 de 6</div></div></div>
+      <div class="card-body">
+        <div class="timer-wrap">
+          <div id="timerDisp" class="timer-display">00:00:00</div>
+          <div class="timer-btns">
+            <button id="btnIni" class="btn btn-primary" onclick="iniciarTimer()"><i class="fa-solid fa-play"></i> Iniciar</button>
+            <button id="btnPau" class="btn btn-warning" disabled onclick="abrirModal('modalPausa')"><i class="fa-solid fa-pause"></i> Pausar</button>
+          </div>
+          <div id="timerLog" class="timer-log"><div class="timer-log-item" style="color:rgba(255,255,255,0.25)">Aguardando início...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATÓRIO TÉCNICO -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-clipboard-list"></i></div><div><div class="card-title">Relatório Técnico</div><div class="card-subtitle">Seção 6 de 6</div></div></div>
+      <div class="card-body">
+        <div class="form-group"><label class="form-label"><i class="fa-solid fa-screwdriver-wrench"></i> Serviço Executado <span class="required">*</span></label><textarea id="servico" class="form-control" rows="4" placeholder="Descreva detalhadamente os serviços realizados..." oninput="autoSave();prog()"></textarea></div>
+        <div class="form-group"><label class="form-label"><i class="fa-solid fa-boxes-stacked"></i> Peças Aplicadas</label><textarea id="pecas" class="form-control" rows="3" placeholder="1x Filtro de Óleo&#10;2x Correia do Alternador" oninput="autoSave()"></textarea></div>
+        <div class="form-group"><label class="form-label"><i class="fa-solid fa-file-lines"></i> Observações</label><textarea id="obs" class="form-control" rows="2" placeholder="Ex: Recomenda-se substituir a bateria na próxima revisão." oninput="autoSave()"></textarea></div>
+        <div class="form-group">
+          <label class="form-label"><i class="fa-solid fa-circle-check"></i> Status da OS</label>
+          <select id="status" class="form-control" onchange="autoSave()">
+            <option value="Concluído">✅ Concluído</option>
+            <option value="Pendente">⏳ Pendente</option>
+            <option value="Aguardando Peça">📦 Aguardando Peça</option>
+            <option value="Orçamento Enviado">💰 Orçamento Enviado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOTOS -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-camera"></i></div><div><div class="card-title">Evidências Fotográficas</div><div class="card-subtitle"><span id="fotoCnt">0</span>/15 fotos</div></div></div>
+      <div class="card-body">
+        <input type="file" id="inputFotos" accept="image/*" multiple style="display:none" onchange="addFotos(this)">
+        <div id="photosGrid" class="photos-grid">
+          <div class="photo-add-btn" onclick="document.getElementById('inputFotos').click()"><i class="fa-solid fa-camera-retro"></i><span>Adicionar</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENCERRAMENTO -->
+    <div class="card">
+      <div class="card-header"><div class="card-icon"><i class="fa-solid fa-pen-nib"></i></div><div><div class="card-title">Encerramento da OS</div><div class="card-subtitle">Assinatura e emissão</div></div></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Assinatura do Cliente</label>
+          <div id="sigPreview" class="sig-preview">
+            <div class="sig-placeholder"><i class="fa-solid fa-pen-nib" style="font-size:26px;opacity:0.2"></i><span>Toque para assinar</span></div>
+          </div>
+          <button id="btnEditar" class="btn btn-warning btn-block mb-3" style="display:none" onclick="desbloquearOS()"><i class="fa-solid fa-unlock"></i> Editar OS (Desbloquear)</button>
+          <button id="btnAbrirSig" class="btn btn-outline btn-block" onclick="abrirModal('modalSig')"><i class="fa-solid fa-signature"></i> Abrir Painel de Assinatura</button>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button id="btnPdf" class="btn btn-primary btn-block btn-lg" onclick="gerarPDFELimpar()" disabled><i class="fa-solid fa-file-pdf"></i> Gerar PDF e Finalizar OS</button>
+          <button id="btnSalvar" class="btn btn-success btn-block" onclick="salvarOS()"><i class="fa-solid fa-floppy-disk"></i> Salvar OS no Histórico</button>
+          <button class="btn btn-ghost btn-block" onclick="abrirWhatsapp()"><i class="fa-brands fa-whatsapp" style="color:#25d366"></i> Enviar por WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tab-os -->
+
+  <!-- ========== DASHBOARD ========== -->
+  <div id="tab-dash" class="tab-content">
+    <div style="font-size:18px;font-weight:900;margin-bottom:4px">Dashboard</div>
+    <div class="text-sm text-muted mb-3">Visão geral do sistema</div>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dash-num" id="dTotalOS">0</div><div class="dash-label">OS Registradas</div><i class="fa-solid fa-file-lines dash-icon"></i></div>
+      <div class="dash-card accent"><div class="dash-num" id="dTotalCli">0</div><div class="dash-label">Clientes</div><i class="fa-solid fa-users dash-icon"></i></div>
+      <div class="dash-card success"><div class="dash-num" id="dConcluidas">0</div><div class="dash-label">Concluídas</div><i class="fa-solid fa-circle-check dash-icon"></i></div>
+      <div class="dash-card warn"><div class="dash-num" id="dPendentes">0</div><div class="dash-label">Pendentes</div><i class="fa-solid fa-clock dash-icon"></i></div>
+    </div>
+    <div class="dash-list-card">
+      <div class="dash-list-header"><div class="dash-list-title"><i class="fa-solid fa-chart-bar" style="color:var(--primary)"></i> OS por Tipo</div></div>
+      <div class="dash-chart" id="dashChart"></div>
+    </div>
+    <div class="dash-list-card">
+      <div class="dash-list-header"><div class="dash-list-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary)"></i> Últimas OS</div><button class="btn btn-ghost btn-icon" onclick="switchTab('tab-hist')" style="font-size:12px;padding:6px 10px">Ver todas</button></div>
+      <div class="dash-list-body" id="dashUltimasOS"><div class="dash-empty">Nenhuma OS registrada.</div></div>
+    </div>
+    <div class="dash-list-card">
+      <div class="dash-list-header"><div class="dash-list-title"><i class="fa-solid fa-users" style="color:var(--accent)"></i> Clientes Cadastrados</div><button class="btn btn-ghost btn-icon" onclick="switchTab('tab-cfg')" style="font-size:12px;padding:6px 10px">Gerenciar</button></div>
+      <div class="dash-list-body" id="dashClientes"><div class="dash-empty">Nenhum cliente cadastrado.</div></div>
+    </div>
+  </div>
+
+  <!-- ========== HISTÓRICO ========== -->
+  <div id="tab-hist" class="tab-content">
+    <div class="d-flex align-center" style="justify-content:space-between;margin-bottom:14px">
+      <div><div style="font-size:17px;font-weight:800">Histórico de OS</div><div class="text-sm text-muted"><span id="totalOS">0</span> ordens registradas</div></div>
+      <button class="btn btn-ghost btn-icon" onclick="renderHist()"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+    <div class="form-group mb-3"><input type="search" id="busca" class="form-control" placeholder="🔍 Buscar por cliente, equipamento, técnico..." oninput="renderHist()"></div>
+    <div id="osList" class="os-list"></div>
+  </div>
+
+  <!-- ========== CONFIG ========== -->
+  <div id="tab-cfg" class="tab-content">
+    <div class="cfg-section">
+      <div class="cfg-title"><i class="fa-solid fa-building"></i> Dados da Empresa</div>
+      <div class="form-group"><label class="form-label">Nome da Empresa</label><input type="text" id="cfEmpresa" class="form-control" placeholder="MARLIFT SERVICE" oninput="salvarCfg()"></div>
+      <div class="row">
+        <div class="form-group"><label class="form-label">CNPJ</label><input type="text" id="cfCnpj" class="form-control" placeholder="00.000.000/0001-00" oninput="salvarCfg()"></div>
+        <div class="form-group"><label class="form-label">Telefone</label><input type="tel" id="cfTel" class="form-control" placeholder="(00) 0000-0000" oninput="salvarCfg()"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Endereço</label><input type="text" id="cfEnd" class="form-control" placeholder="Rua, Nº, Cidade - UF" oninput="salvarCfg()"></div>
+      <div class="form-group"><label class="form-label">Próximo Nº de OS</label><input type="number" id="cfProxOS" class="form-control" value="1" min="1" oninput="salvarCfg()"></div>
+    </div>
+    <div class="cfg-section">
+      <div class="cfg-title"><i class="fa-solid fa-cloud"></i> Google Sheets — Sincronização</div>
+      <div class="info-box">
+        <div>
+          <strong><i class="fa-solid fa-circle-info"></i> Como configurar:</strong>
+          <ol>
+            <li>Acesse <strong>script.google.com</strong> → Novo projeto</li>
+            <li>Cole o código (botão abaixo) e salve</li>
+            <li>Clique em <strong>Implantar → Nova implantação</strong></li>
+            <li>Tipo: <strong>App da Web</strong> · Acesso: <strong>Qualquer pessoa, mesmo anônimas</strong></li>
+            <li>Copie a URL gerada e cole no campo abaixo</li>
+          </ol>
+          <button class="btn btn-ghost mt-2" onclick="copiarScript()" style="font-size:12px;padding:8px 12px"><i class="fa-solid fa-copy"></i> Copiar código Apps Script</button>
+        </div>
+      </div>
+      <div id="syncBadge" class="sync-badge idle"><i class="fa-solid fa-circle-dot"></i> Não configurado — funcionando offline</div>
+      <div class="form-group"><label class="form-label">URL do Apps Script (Web App)</label><input type="url" id="cfSheets" class="form-control" placeholder="https://script.google.com/macros/s/..." inputmode="url" oninput="salvarCfg()"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="syncClientes()"><i class="fa-solid fa-arrows-rotate"></i> Sincronizar</button>
+        <button class="btn btn-ghost btn-icon" onclick="testarConn()" title="Testar"><i class="fa-solid fa-plug"></i></button>
+      </div>
+    </div>
+    <div class="cfg-section">
+      <div class="cfg-title"><i class="fa-solid fa-users"></i> Clientes Cadastrados</div>
+      <button class="btn btn-primary btn-block mb-3" onclick="abrirModal('modalCli')"><i class="fa-solid fa-user-plus"></i> Novo Cliente</button>
+      <div id="clientList" class="client-list"></div>
+    </div>
+    <div class="cfg-section">
+      <div class="cfg-title"><i class="fa-solid fa-database"></i> Sistema</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-danger btn-block" onclick="limparTudo()"><i class="fa-solid fa-bomb"></i> Apagar Todos os Dados</button>
+        <button class="btn btn-ghost btn-block" onclick="fazerLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair / Logout</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<nav class="bottom-nav">
+  <button class="bnav-item active" data-tab="tab-os"   onclick="switchTab('tab-os')"><i class="fa-solid fa-file-pen"></i> Nova OS</button>
+  <button class="bnav-item"        data-tab="tab-dash"  onclick="switchTab('tab-dash')"><i class="fa-solid fa-gauge-high"></i> Dashboard</button>
+  <button class="bnav-item"        data-tab="tab-hist"  onclick="switchTab('tab-hist')"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
+  <button class="bnav-item"        data-tab="tab-cfg"   onclick="switchTab('tab-cfg')"><i class="fa-solid fa-gear"></i> Config</button>
+</nav>
+
+<!-- MODAL CLIENTE -->
+<div id="modalCli" class="modal">
+  <div class="modal-box">
+    <div class="modal-header"><h3><i class="fa-solid fa-user-plus"></i> Novo Cliente / Equipamento</h3><button class="modal-close" onclick="fecharModal()">&times;</button></div>
+    <div class="modal-body">
+      <div style="font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px"><i class="fa-solid fa-building"></i> Dados da Empresa</div>
+      <div class="form-group"><label class="form-label">Razão Social <span class="required">*</span></label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Empresa ABC Ltda" autocomplete="off"></div>
+      <div class="row">
+        <div class="form-group"><label class="form-label">CNPJ</label><input type="text" id="cadCnpj" class="form-control" placeholder="00.000.000/0001-00" inputmode="numeric"></div>
+        <div class="form-group"><label class="form-label">Telefone</label><input type="tel" id="cadTel" class="form-control" placeholder="(00) 99999-9999" inputmode="tel" oninput="mascaraTel(this)"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Endereço <span class="required">*</span></label><input type="text" id="cadEnd" class="form-control" placeholder="Rua, Nº, Bairro, Cidade" autocomplete="off"></div>
+      <div class="row">
+        <div class="form-group"><label class="form-label">Contato</label><input type="text" id="cadContato" class="form-control" placeholder="Nome"></div>
+        <div class="form-group"><label class="form-label">E-mail</label><input type="email" id="cadEmail" class="form-control" placeholder="email@empresa.com" inputmode="email"></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px"><i class="fa-solid fa-truck-ramp-box"></i> Equipamento</div>
+      <div class="row">
+        <div class="form-group"><label class="form-label">Marca <span class="required">*</span></label>
+          <select id="cadMarca" class="form-control"><option value="">Selecione...</option><option>TOYOTA</option><option>CLARK</option><option>HYSTER</option><option>YALE</option><option>STILL</option><option>HANGCHA</option><option>NISSAN</option><option>KOMATSU</option><option>MITSUBISHI</option><option>GOODSENSE</option><option>HELI</option><option>PALETRANS</option><option>OUTRA</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Modelo <span class="required">*</span></label><input type="text" id="cadModelo" class="form-control" placeholder="CPY25"></div>
+      </div>
+      <div class="row">
+        <div class="form-group"><label class="form-label">Combustível</label><select id="cadComb" class="form-control"><option>GLP</option><option>ELÉTRICA</option><option>DIESEL</option><option>GASOLINA</option></select></div>
+        <div class="form-group"><label class="form-label">Nº de Série <span class="required">*</span></label><input type="text" id="cadSerie" class="form-control" placeholder="E356-0023"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCliente()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ASSINATURA -->
+<div id="modalSig" class="modal fullscreen">
+  <div class="modal-box" style="display:flex;flex-direction:column;">
+    <div class="modal-header"><h3><i class="fa-solid fa-signature"></i> Assinatura do Cliente</h3><button class="modal-close" onclick="fecharModal()">&times;</button></div>
+    <div class="modal-body" style="flex:1;display:flex;flex-direction:column;gap:14px;">
+      <p class="text-sm text-muted text-center">Preencha os dados e assine na área abaixo</p>
+      <div class="row">
+        <div class="form-group"><label class="form-label">Nome Completo <span class="required">*</span></label><input type="text" id="sigNome" class="form-control" placeholder="Ex: João da Silva"></div>
+        <div class="form-group"><label class="form-label">RG / CPF <span class="required">*</span></label><input type="text" id="sigDoc" class="form-control" placeholder="000.000.000-00" inputmode="numeric"></div>
+      </div>
+      <div class="canvas-wrap" style="flex:1;border:2px solid var(--border);"><canvas id="sigCanvas"></canvas></div>
+      <div class="text-center text-sm text-muted"><i class="fa-solid fa-hand-pointer"></i> Use o dedo para assinar</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="clearSig()"><i class="fa-solid fa-eraser"></i> Limpar</button>
+      <button class="btn btn-success" onclick="salvarSig()"><i class="fa-solid fa-check"></i> Confirmar e Bloquear OS</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAUSA -->
+<div id="modalPausa" class="modal">
+  <div class="modal-box">
+    <div class="modal-header"><h3><i class="fa-solid fa-pause"></i> Motivo da Pausa</h3><button class="modal-close" onclick="fecharModal()">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Motivo</label>
+        <select id="motivoPausa" class="form-control" onchange="toggleMotivoOutro(this.value)">
+          <option>Intervalo de almoço</option><option>Aguardando peça</option>
+          <option>Aguardando liberação do equipamento</option><option>Deslocamento até fornecedor</option>
+          <option value="Outro">Outro...</option>
+        </select>
+      </div>
+      <div id="motivoOutroWrap" class="form-group" style="display:none">
+        <label class="form-label">Especifique</label>
+        <input type="text" id="motivoOutro" class="form-control" placeholder="Descreva o motivo...">
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-warning btn-block" onclick="confirmarPausa()"><i class="fa-solid fa-pause"></i> Confirmar Pausa</button></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="fecharLightbox()">
+  <button class="lb-close"><i class="fa-solid fa-xmark"></i></button>
+  <img id="lbImg" src="" alt="Foto">
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="os-script.js"></script>
+</body>
+</html>
